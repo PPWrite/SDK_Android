@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,13 +20,11 @@ import cn.robotpen.core.widget.WhiteBoardView;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.symbol.DeviceType;
-import cn.robotpen.pen.callback.PenPositionAndEventCallback;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpenDemo.board.MyApplication;
 import cn.robotpenDemo.board.R;
-import cn.robotpenDemo.board.common.BaseConnectPenServiceActivity;
 
 public class WhiteBoardActivity extends RobotPenActivity
         implements WhiteBoardView.CanvasManageInterface {//BaseConnectPenServiceActivity<PenPositionAndEventCallback>

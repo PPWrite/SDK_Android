@@ -1,8 +1,15 @@
 package cn.robotpenDemo.board;
 
-import android.app.Activity;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,14 +24,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.robotpen.pen.callback.RobotPenActivity;
+import cn.robotpen.pen.RobotPenServiceImpl;
 import cn.robotpenDemo.board.common.ResUtils;
 import cn.robotpenDemo.board.connect.BleConnectActivity;
 import cn.robotpenDemo.board.show.RecordBoardActivity;
 import cn.robotpenDemo.board.show.WhiteBoardActivity;
 import cn.robotpenDemo.board.show.WhiteBoardWithMethodActivity;
 
-public class MainActivity extends RobotPenActivity {
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.list)
     ListView list;
@@ -34,6 +41,8 @@ public class MainActivity extends RobotPenActivity {
     LinearLayout activityMain;
 
     List<String> itemList;
+
+    public RobotPenServiceImpl robotPenService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,51 @@ public class MainActivity extends RobotPenActivity {
         ListAdapter itemAdapter = new ArrayAdapter(this,R.layout.support_simple_spinner_dropdown_item,itemList);
         list.setAdapter(itemAdapter);
         list.setOnItemClickListener(itemClickListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkSDPermission();
+    }
+
+    private void checkSDPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("")
+                        .setCancelable(false)
+                        .setMessage("请授予SD卡读写权限")
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                finish();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent settingIntent = new Intent(
+                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", getPackageName(), null)
+                                );
+                                startActivityForResult(settingIntent, 0xF);
+                            }
+                        })
+                        .create().show();
+            }
+        } else {
+            robotPenService = new RobotPenServiceImpl(this.getBaseContext());
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                //权限处理
+                return;
+            }
+            robotPenService.startRobotPenService(this.getBaseContext(), true);//true为在通知栏显示通知 false将不在通知栏显示
+        }
     }
 
 
@@ -86,15 +140,5 @@ public class MainActivity extends RobotPenActivity {
             }
         }
     };
-
-    @Override
-    public void onStateChanged(int i, String s) {
-
-    }
-
-    @Override
-    public void onPenServiceError(String s) {
-
-    }
 
 }

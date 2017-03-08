@@ -45,13 +45,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
-import cn.robotpen.pen.callback.RemoteCallback;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpen.pen.scan.RobotScanCallback;
 import cn.robotpenDemo.board.R;
-import cn.robotpenDemo.board.common.BaseConnectPenServiceActivity;
 
 
 public class BleConnectActivity extends RobotPenActivity{
