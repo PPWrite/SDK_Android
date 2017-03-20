@@ -1,7 +1,9 @@
 package cn.robotpenDemo.board.show;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.Date;
@@ -166,14 +169,69 @@ public class RecordBoardActivity extends RobotPenActivity
         }
     }
 
-    @OnClick({R.id.cleanScreenBut
+    @OnClick({R.id.changePenBut, R.id.changePenColorBut
+            , R.id.cleanLineBut,R.id.cleanScreenBut
             , R.id.innerPhotoBut, R.id.removePhotoBut
-            , R.id.saveScreenBut
-            , R.id.innerbgBut, R.id.removeBgBut
+            , R.id.saveScreenBut, R.id.cleanPhotoBut
+            , R.id.innerbgBut, R.id.removeBgBut,R.id.bgScaleTypeBut
             , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut
             , R.id.recordBut, R.id.recordStopBut})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.changePenBut: //更改笔粗细
+                final String[] penWeightItems = {"2个像素", "3个像素", "10个像素", "50个像素"};
+                new AlertDialog.Builder(RecordBoardActivity.this).setTitle("修改笔粗细")
+                        .setItems(penWeightItems, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO Auto-generated method stub
+                                switch (which) {
+                                    case 0:
+                                        mPenWeight = 2;
+                                        break;
+                                    case 1:
+                                        mPenWeight = 3;
+                                        break;
+                                    case 2:
+                                        mPenWeight = 10;
+                                        break;
+                                    case 3:
+                                        mPenWeight = 50;
+                                        break;
+                                }
+                            }
+                        }).show();
+
+                break;
+            case R.id.changePenColorBut:
+                final String[] penColorItems = {"红色", "绿色", "蓝色", "黑色"};
+                new AlertDialog.Builder(RecordBoardActivity.this).setTitle("修改笔颜色")
+                        .setItems(penColorItems, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        mPenColor = Color.RED;
+                                        break;
+                                    case 1:
+                                        mPenColor = Color.GREEN;
+                                        break;
+                                    case 2:
+                                        mPenColor = Color.BLUE;
+                                        break;
+                                    case 3:
+                                        mPenColor = Color.BLACK;
+                                        break;
+                                }
+                            }
+                        }).show();
+                break;
+            case R.id.cleanLineBut:
+                recordBoardView.cleanTrail();
+                break;
+            case R.id.cleanPhotoBut:
+                recordBoardView.cleanPhoto();
+                break;
             case R.id.cleanScreenBut:
                 recordBoardView.cleanScreen();
                 break;
@@ -207,6 +265,9 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case R.id.gotoNextBut:
                 recordBoardView.nextBlock();
+                break;
+            case R.id.bgScaleTypeBut:
+                recordBoardView.setBgScaleType(ImageView.ScaleType.CENTER_CROP);
                 break;
             case R.id.recordBut:
                 recordBoardView.setSaveVideoDir(ResUtils.getSavePath(ResUtils.DIR_NAME_VIDEO));//设置存储路径
@@ -382,8 +443,10 @@ public class RecordBoardActivity extends RobotPenActivity
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-        recordBoardView.drawLine(p);
+        if(isRubber==0) {// isRubber==0  现在没用橡皮察，止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
+            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
+            recordBoardView.drawLine(p);
+        }
     }
 
 }

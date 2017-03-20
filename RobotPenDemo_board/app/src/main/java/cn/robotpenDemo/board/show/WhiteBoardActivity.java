@@ -35,7 +35,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     WhiteBoardView whiteBoardView;
 
     DeviceType mDeDeviceType = DeviceType.P1;//默认连接设备为P1 当与连接设备有冲突时则需要进行切换
-    boolean isRubber;//是否是橡皮
+    int isRubber;//是否是橡皮
     boolean isTouchWrite;//是否可以通过屏幕书写
     float mPenWeight = 2;//笔粗细
     int mPenColor = Color.BLACK;//笔颜色
@@ -124,7 +124,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public float getIsRubber() {
-        return 0;
+        return isRubber;
     }
 
     @Override
@@ -196,7 +196,9 @@ public class WhiteBoardActivity extends RobotPenActivity
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-        whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+        if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
+            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
+            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+        }
     }
 }
