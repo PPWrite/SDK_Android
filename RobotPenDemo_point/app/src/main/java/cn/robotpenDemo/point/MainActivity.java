@@ -48,6 +48,7 @@ public class MainActivity extends RobotPenActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        checkSDPermission();
         ButterKnife.bind(this);
         S.init(true,1,"PP_WRITER");
         //屏幕常亮控制
@@ -61,7 +62,6 @@ public class MainActivity extends RobotPenActivity {
             }
         });
     }
-
 
     @Override
     public void onStateChanged(int i, String s) {

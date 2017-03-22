@@ -24,13 +24,11 @@ import cn.robotpen.core.widget.WhiteBoardView;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.symbol.DeviceType;
-import cn.robotpen.pen.callback.PenPositionAndEventCallback;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpenDemo.board.MyApplication;
 import cn.robotpenDemo.board.R;
-import cn.robotpenDemo.board.common.BaseConnectPenServiceActivity;
 import cn.robotpenDemo.board.common.ResUtils;
 
 public class WhiteBoardWithMethodActivity extends RobotPenActivity
@@ -365,7 +363,9 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-        whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+        if(isRubber==0) {// isRubber==0  现在没用橡皮察,  防止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
+            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
+            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+        }
     }
 }
