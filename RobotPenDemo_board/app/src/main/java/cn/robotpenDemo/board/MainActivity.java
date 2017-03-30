@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     List<String> itemList;
 
-    public RobotPenServiceImpl robotPenService;
+//    public RobotPenServiceImpl robotPenService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
                         .create().show();
             }
         } else {
-            robotPenService = new RobotPenServiceImpl(this.getBaseContext());
+            /*robotPenService = new RobotPenServiceImpl(this.getBaseContext());
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                     || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //权限处理
                 return;
             }
-            robotPenService.startRobotPenService(this.getBaseContext(), true);//true为在通知栏显示通知 false将不在通知栏显示
+            robotPenService.startRobotPenService(this.getBaseContext(), true);//true为在通知栏显示通知 false将不在通知栏显示*/
         }
     }
 

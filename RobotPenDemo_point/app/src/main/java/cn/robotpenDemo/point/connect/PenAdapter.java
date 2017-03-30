@@ -38,11 +38,12 @@ public class PenAdapter extends BaseAdapter {
     }
 
     public void addItem(DeviceEntity item) {
-        String macAddr = item.getAddress();
+
         for (int i=0;i<mPenDevices.size();i++) {
             if (mPenDevices.get(i).getAddress().equals(item.getAddress()))
                 return;
         }
+//        String macAddr = item.getAddress();
         //dataCache.put(macAddr,item);
         mPenDevices.add(item);
         notifyDataSetChanged();

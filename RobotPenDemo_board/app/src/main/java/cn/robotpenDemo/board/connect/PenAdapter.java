@@ -49,7 +49,7 @@ public class PenAdapter extends BaseAdapter {
 	}
 	
 	public void addItem(DeviceEntity item){
-		String macAddr = item.getAddress();
+		/*String macAddr = item.getAddress();
 		CheckRunnable checkRunnable = checkMap.get(macAddr);
 		if (checkRunnable != null) {
 			checkHandler.removeCallbacks(checkRunnable);
@@ -65,7 +65,15 @@ public class PenAdapter extends BaseAdapter {
 			checkRunnable = new CheckRunnable(macAddr);
 			checkMap.put(macAddr, checkRunnable);
 		}
-		checkHandler.postDelayed(checkRunnable, CHECK_DELAY);
+		checkHandler.postDelayed(checkRunnable, CHECK_DELAY);*/
+
+
+		for (int i=0;i<mPenDevices.size();i++) {
+			if (mPenDevices.get(i).getAddress().equals(item.getAddress()))
+				return;
+		}
+		mPenDevices.add(item);
+		notifyDataSetChanged();
 	}
 	
 	/**

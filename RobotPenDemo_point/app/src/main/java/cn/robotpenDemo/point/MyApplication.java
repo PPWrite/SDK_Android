@@ -10,7 +10,7 @@ import cn.robotpen.pen.RobotPenService;
 
 public class MyApplication extends Application {
 
-    public RobotPenService robotPenService;
+//    public RobotPenService robotPenService;
     private static MyApplication instance = null;
 
     public static MyApplication getInstance() {
@@ -35,9 +35,9 @@ public class MyApplication extends Application {
      *
      * @return
      */
-    public RobotPenService getRobotPenService() {
+   /* public RobotPenService getRobotPenService() {
         return this.robotPenService;
-    }
+    }*/
 
     @Override
     public void onTerminate() {
