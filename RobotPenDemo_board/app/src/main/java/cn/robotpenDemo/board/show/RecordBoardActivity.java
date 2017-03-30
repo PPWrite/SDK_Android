@@ -74,6 +74,8 @@ public class RecordBoardActivity extends RobotPenActivity
     Button recordBut;
     @BindView(R.id.recordStopBut)
     Button recordStopBut;
+    @BindView(R.id.recordCancelBut)
+    Button recordCancelBut;
     @BindView(R.id.delPageBut)
     Button delPageBut;
     @BindView(R.id.gotoProBut)
@@ -175,7 +177,7 @@ public class RecordBoardActivity extends RobotPenActivity
             , R.id.saveScreenBut, R.id.cleanPhotoBut
             , R.id.innerbgBut, R.id.removeBgBut,R.id.bgScaleTypeBut
             , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut
-            , R.id.recordBut, R.id.recordStopBut})
+            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.changePenBut: //更改笔粗细
@@ -276,6 +278,8 @@ public class RecordBoardActivity extends RobotPenActivity
                     ((Button) v).setText("暂停");
                     recordStopBut.setClickable(true);
                     recordStopBut.setBackgroundColor(Color.DKGRAY);
+                    recordCancelBut.setClickable(true);
+                    recordCancelBut.setBackgroundColor(Color.DKGRAY);
                     recordBoardView.startRecord();
                 } else if (butFlag == 1) {// 点击暂停按钮
                     butFlag = 2;// 可以继续
@@ -288,12 +292,25 @@ public class RecordBoardActivity extends RobotPenActivity
                 }
                 break;
             case R.id.recordStopBut:
-                if(butFlag==1||butFlag==2) {// 防止直接点击崩溃
+                if (butFlag == 1 || butFlag == 2) {// 防止直接点击崩溃
                     butFlag = 0;// 可以暂停
                     recordBut.setText("录制");
                     v.setBackgroundColor(Color.GRAY);
-                    ((Button) v).setClickable(false);
+                    v.setClickable(false);
+                    recordCancelBut.setBackgroundColor(Color.GRAY);
+                    recordCancelBut.setClickable(false);
                     recordBoardView.endRecord();
+                }
+                break;
+            case R.id.recordCancelBut:
+                if (butFlag == 1 || butFlag == 2) {// 防止直接点击崩溃
+                    butFlag = 0;// 可以暂停
+                    recordBut.setText("录制");
+                    v.setBackgroundColor(Color.GRAY);
+                    v.setClickable(false);
+                    recordStopBut.setBackgroundColor(Color.GRAY);
+                    recordStopBut.setClickable(false);
+                    recordBoardView.cancelRecord();
                 }
                 break;
         }
@@ -396,6 +413,7 @@ public class RecordBoardActivity extends RobotPenActivity
         switch (recordState) {
             case START:
                 break;
+            case CANCEL:
             case END:
                 break;
             case PAUSE:
