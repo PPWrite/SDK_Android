@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -316,6 +317,18 @@ public class RecordBoardActivity extends RobotPenActivity
         }
     }
 
+    public boolean isScreenLanscape() {
+
+        Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
+        int ori = mConfiguration.orientation ; //获取屏幕方向
+
+        if(ori == mConfiguration.ORIENTATION_LANDSCAPE){
+            return true;//横屏
+        }else if(ori == mConfiguration.ORIENTATION_PORTRAIT){
+            return false;//竖屏
+        }
+        return false;
+    }
 
     @Override
     public DeviceType getDeviceType() {
@@ -344,7 +357,7 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public boolean getIsHorizontal() {
-        return false;
+        return isScreenLanscape();
     }
 
     @Override

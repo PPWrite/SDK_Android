@@ -17,6 +17,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -28,15 +29,14 @@
         <activity
             android:name=".show.WhiteBoardActivity"
             android:label="@string/title_activity_white_board"
-            android:screenOrientation="portrait"
             />
         <activity android:name=".show.RecordBoardActivity"
-            android:screenOrientation="portrait"/>
+            />
         <activity android:name=".connect.BleConnectActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
+            />
         <activity android:name=".show.WhiteBoardWithMethodActivity"
-            android:screenOrientation="portrait"/>
+            />
     </application>
 
 </manifest>
