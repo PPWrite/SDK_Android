@@ -61,7 +61,9 @@ public class MainActivity extends RobotPenActivity {
                 startActivity(new Intent(MainActivity.this, BleConnectActivity.class));
             }
         });
+        //getRobotPenService().startRobotPenService(this,false);
     }
+
 
     @Override
     public void onStateChanged(int i, String s) {
@@ -75,6 +77,7 @@ public class MainActivity extends RobotPenActivity {
 
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
+        // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
         /**
@@ -92,7 +95,6 @@ public class MainActivity extends RobotPenActivity {
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
         /**
          *也可以根据x,y坐标点直接绘制
-         *
          **/
         //DeviceType dType = point.getDeviceType();//根据设备值转化为设备类型  也可以通过deviceType 直接转化
     }

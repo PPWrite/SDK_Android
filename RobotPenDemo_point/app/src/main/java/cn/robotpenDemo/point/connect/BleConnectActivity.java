@@ -533,6 +533,8 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case RemoteState.STATE_DEVICE_INFO: //设备连接成功状态
                 try {
+                    mPenAdapter.clearItems();
+                    mPenAdapter.notifyDataSetChanged();
                     RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice();
                     if (null != robotDevice) {
                         closeProgress();

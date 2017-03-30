@@ -11,7 +11,6 @@ import cn.robotpen.pen.RobotPenService;
 /**
  * Created by dadou on 2017/1/20.
  */
-
 public class MyApplication extends Application {
 
     public RobotPenService robotPenService;
@@ -34,20 +33,19 @@ public class MyApplication extends Application {
         }
         robotPenService.startRobotPenService(this.getBaseContext(), true);//true为在通知栏显示通知 false将不在通知栏显示*/
     }
+
     /**
      * 获取笔服务
-     *
      * @return
      */
     public RobotPenService getRobotPenService() {
         return this.robotPenService;
     }
-    /**
+    /*
      * 统一创建session
-     *
      * @return
      */
-    public DaoSession getDaoSession() {
+    public DaoSession getDaoSession(){
         if(null==daoSession){
             SQLiteDatabase db = new DaoMaster.DevOpenHelper(instance, DBConfig.DB_NAME).getWritableDatabase();
             this.daoSession = new DaoMaster(db).newSession();
@@ -60,5 +58,4 @@ public class MyApplication extends Application {
         // 程序终止的时候执行
         super.onTerminate();
     }
-
 }
