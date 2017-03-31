@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 
@@ -49,10 +50,22 @@ public class WhiteBoardActivity extends RobotPenActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_white_board);
         ButterKnife.bind(this);
+        if (android.os.Build.VERSION.SDK_INT<23){
+            //运行在主线程执行网络请求
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads().detectDiskWrites().detectNetwork()
+                    .penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()
+                    .penaltyLog().penaltyDeath().build());
+        }
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
+
+
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -63,6 +76,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onDestroy() {
         super.onDestroy();
         if (whiteBoardView != null) {
+//          whiteBoardView.cleanScreen();  // 清屏
             whiteBoardView.dispose();
             whiteBoardView = null;
         }
@@ -103,6 +117,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         switch (v.getId()) {
             case R.id.clearnScreen:
                 whiteBoardView.cleanScreen();
+
                 break;
         }
     }
@@ -161,8 +176,8 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
 
     @Override
-    public String getNewNoteName() {
-        return null;
+    public String getNewNoteName() { //修改右下角页码名称
+        return "123";
     }
 
     @Override

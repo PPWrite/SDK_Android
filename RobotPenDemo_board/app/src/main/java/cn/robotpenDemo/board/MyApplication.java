@@ -2,6 +2,7 @@ package cn.robotpenDemo.board;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.StrictMode;
 
 import cn.robotpen.model.db.DBConfig;
 import cn.robotpen.model.db.DaoMaster;
@@ -25,6 +26,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
       /*  robotPenService = new RobotPenServiceImpl(this.getBaseContext());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
