@@ -96,6 +96,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     protected void onResume() {
         super.onResume();
         whiteBoardView.initDrawArea();
+        checkIntentInsertPhoto();
 
     }
 
@@ -343,9 +344,9 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
-            case TRAILS_COMPLETE:
-                checkIntentInsertPhoto();
-                break;
+            /*case TRAILS_COMPLETE:
+                 checkIntentInsertPhoto();
+                break;*/
         }
         return true;
     }

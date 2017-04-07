@@ -223,6 +223,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
+        //state 0x00 离开  0x10 悬空  0x01
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
