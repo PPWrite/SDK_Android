@@ -1,8 +1,12 @@
 package cn.robotpenDemo.point;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,8 +19,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
+import cn.robotpen.model.entity.note.NoteEntity;
+import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.model.symbol.SceneType;
 import cn.robotpen.pen.callback.RobotPenActivity;
+import cn.robotpen.pen.model.RemoteState;
+import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpenDemo.point.connect.BleConnectActivity;
 
 /**
@@ -67,7 +75,44 @@ public class MainActivity extends RobotPenActivity {
 
     @Override
     public void onStateChanged(int i, String s) {
+        switch (i) {
+            case RemoteState.STATE_CONNECTED:
+                Log.e("test","STATE_CONNECTED ");
+                break;
+            case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
+                //whiteBoardView.initDrawArea();
+                checkDeviceConn();
+                break;
+            case RemoteState.STATE_DISCONNECTED://设备断开
+                Log.e("test","STATE_DISCONNECTED ");
+                break;
+        }
+    }
 
+    /**
+     * 当服务服务连接成功后进行
+     *
+     * @param name
+     * @param service
+     */
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        super.onServiceConnected(name, service);
+        checkDeviceConn();
+    }
+
+    public void checkDeviceConn() {
+        if (getPenServiceBinder() != null) {
+            try {
+                RobotDevice device = getPenServiceBinder().getConnectedDevice();
+                if (device != null) {
+                    DeviceType type = DeviceType.toDeviceType(device.getDeviceVersion());
+                    //判断当前设备与笔记设备是否一致
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -79,10 +124,10 @@ public class MainActivity extends RobotPenActivity {
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
+        Log.e("test","x: "+x+"  y:"+y);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
         /**
          *DevicePoint 将会获取更多的信息
-         *
          **/
         connectDeviceType.setText(point.getDeviceType().name());
         boolean screenSetting = mSetting.isDirection();//获取横竖屏设置 默认为竖屏

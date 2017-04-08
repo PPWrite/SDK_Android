@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,6 +88,7 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onPenServiceStarted() {
         super.onPenServiceStarted();
+        Log.e("test","onPenServiceStarted ");
 //            S.i("");
     }
 
@@ -97,17 +99,20 @@ public class MainTwoActivity extends BaseTwoActivity {
         super.onConnected(penType);
         S.i(penType);
         this.deviceType=penType;
+        Log.e("test","STATE_CONNECTED ");
     }
 
     @Override
     public void onConnectFailed(int reasonCode) {
         super.onConnectFailed(reasonCode);
         S.i(reasonCode);
+        Log.e("test","onConnectFailed ");
     }
 
     @Override
     public void onReceiveDot(long timestamp, int x, int y, int pressure, int state) {
         super.onReceiveDot(timestamp,x,y,pressure,state);
+        Log.e("test","x: "+x+"  y:"+y);
         S.i(x, y);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, pressure, (byte)state); //将传入的数据转化为点数据
         /**
@@ -128,6 +133,7 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onDisconnected() {
         S.i("");
+        Log.e("test","onDisconnected ");
     }
 
     @Override

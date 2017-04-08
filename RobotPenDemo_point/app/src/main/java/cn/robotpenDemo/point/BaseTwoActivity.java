@@ -44,6 +44,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         if(!result){
             Toast.makeText(BaseTwoActivity.this,"初始化失败",Toast.LENGTH_SHORT).show();
         }
+
     }
 
 

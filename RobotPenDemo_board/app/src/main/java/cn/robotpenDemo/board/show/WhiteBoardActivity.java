@@ -50,7 +50,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_white_board);
         ButterKnife.bind(this);
-        if (android.os.Build.VERSION.SDK_INT<23){
+       /* if (android.os.Build.VERSION.SDK_INT<23){
             //运行在主线程执行网络请求
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads().detectDiskWrites().detectNetwork()
@@ -58,7 +58,7 @@ public class WhiteBoardActivity extends RobotPenActivity
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()
                     .penaltyLog().penaltyDeath().build());
-        }
+        }*/
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
@@ -83,7 +83,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
     /**
      * 当服务服务连接成功后进行
-     *
+     * 成功不成功都调用
      * @param name
      * @param service
      */
