@@ -23,6 +23,7 @@ import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -43,6 +44,7 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
@@ -52,7 +54,7 @@ import cn.robotpen.pen.scan.RobotScanCallback;
 import cn.robotpenDemo.board.R;
 
 
-public class BleConnectActivity extends RobotPenActivity{
+public class BleConnectActivity extends RobotPenActivity {
 
 
     private final UUID SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
@@ -167,6 +169,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
         }
     }
+
     /**
      * 蓝牙未开启请求
      */
@@ -205,6 +208,7 @@ public class BleConnectActivity extends RobotPenActivity{
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
         }
     }
+
     /**
      * 服务连接成功后需要实现
      */
@@ -212,6 +216,7 @@ public class BleConnectActivity extends RobotPenActivity{
         super.onServiceConnected(name, service);
         checkDevice();//检测设备如果连接过则自动连接
     }
+
     /**
      * 检测设备连接 如果本次连接的是P1则禁止使用如果本次连接的是蓝牙设备则不处理
      * 如果本次未连接但上次已连接蓝牙设备则直接连接
@@ -242,6 +247,7 @@ public class BleConnectActivity extends RobotPenActivity{
             e.printStackTrace();
         }
     }
+
     /**
      * 当有扫描结果时的回调
      */
@@ -258,6 +264,7 @@ public class BleConnectActivity extends RobotPenActivity{
 
         }
     };
+
     /**
      * 开始扫描Ble设备--带过滤
      */
@@ -298,6 +305,7 @@ public class BleConnectActivity extends RobotPenActivity{
             mBluetoothAdapter.stopLeScan((BluetoothAdapter.LeScanCallback) callback);
         }
     }
+
     /**
      * 保存设备的连接信息
      *
@@ -343,6 +351,37 @@ public class BleConnectActivity extends RobotPenActivity{
             alert.show();
         }
     }
+
+    @Override
+    public void onOffLineNoteSyncFinished(String json, byte[] data) {
+        if (data != null && data.length >= 5) {
+            int num = 0, step = 1;
+            List<DevicePoint> points = new ArrayList<>();
+            DeviceType type = DeviceType.toDeviceType(mRobotDevice.getDeviceVersion());
+            DevicePoint point;
+            for (int i = 0; i <= data.length - 5; i += step) {
+                try {
+                    point = new DevicePoint(type, data, i);
+                    step = 5;//5字节为一个点数据
+                } catch (Exception e) {
+                    step = 1;//查找下一个有效字节
+                    e.printStackTrace();
+                    continue;
+                }
+
+                if (point.isLeave()) {
+                    //结束点
+                    num++;
+                    Log.v("Sync", String.format("第%d笔,共%d个点", num, points.size()));
+                    points.clear();
+                } else {
+                    points.add(point);
+                }
+            }
+            Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**--------------
      * 设备升级部分
      -----------------*/
@@ -353,13 +392,13 @@ public class BleConnectActivity extends RobotPenActivity{
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
-                    if(mRobotDevice!=null){
+                    if (mRobotDevice != null) {
                         String device_firmwareVer = mRobotDevice.getFirmwareVerStr();
                         String newVersion = msg.obj.toString();
-                        if (device_firmwareVer.compareTo(newVersion)>0){ //存在新版
+                        if (device_firmwareVer.compareTo(newVersion) > 0) { //存在新版
                             deviceUpdate.setVisibility(View.VISIBLE);
                             mNewVersion = newVersion;
-                        }else {
+                        } else {
                             Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
                             deviceUpdate.setVisibility(View.GONE);
                         }
@@ -370,13 +409,13 @@ public class BleConnectActivity extends RobotPenActivity{
                             .show();
                     break;
                 case ERRORCODE:
-                    Toast.makeText(BleConnectActivity.this, "网络请求失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BleConnectActivity.this, "网络请求失败", Toast.LENGTH_SHORT).show();
                     break;
                 case UPDATESUCCESS:
-                    if(getPenServiceBinder()!=null){
+                    if (getPenServiceBinder() != null) {
                         byte[] newFirmwareVer = (byte[]) msg.obj;
                         try {
-                            getPenServiceBinder().startUpdateFirmware(mNewVersion,newFirmwareVer);
+                            getPenServiceBinder().startUpdateFirmware(mNewVersion, newFirmwareVer);
                             //升级结果可以通过RemoteCallback 进行展示
                             //此时注意观察设备为紫灯常亮，直到设备升级完毕将自动进行重启
                         } catch (RemoteException e) {
@@ -385,13 +424,16 @@ public class BleConnectActivity extends RobotPenActivity{
                     }
                     break;
                 case UPDATEFAILURE:
-                    Toast.makeText(BleConnectActivity.this, "升级失败！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BleConnectActivity.this, "升级失败！", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
+
     /**
      * 检查设备固件版本
      */
@@ -428,11 +470,12 @@ public class BleConnectActivity extends RobotPenActivity{
             }
         }.start();
     }
+
     /**
      * 升级固件版本
      */
     private void updateDevice(RobotDevice device) {
-        final String path = generatorFirmwareUrl(device,mNewVersion);
+        final String path = generatorFirmwareUrl(device, mNewVersion);
         new Thread() {
             public void run() {
                 try {
@@ -474,6 +517,7 @@ public class BleConnectActivity extends RobotPenActivity{
             }
         }.start();
     }
+
     /**
      * 生成固件升级url
      *
@@ -512,12 +556,11 @@ public class BleConnectActivity extends RobotPenActivity{
     }
 
 
-
     /**
      * 显示ProgressDialog
      **/
     private void showProgress(String flag) {
-        mProgressDialog = ProgressDialog.show(this, "", flag+"……", true);
+        mProgressDialog = ProgressDialog.show(this, "", flag + "……", true);
     }
 
     /**
@@ -562,9 +605,9 @@ public class BleConnectActivity extends RobotPenActivity{
                                 disconnectBut.setVisibility(View.VISIBLE);
                                 //如果有离线笔记则同步离线笔记
                                 //checkStorageNoteNum(robotDevice);
-                                if(robotDevice.getOfflineNoteNum()>0){
+                                if (robotDevice.getOfflineNoteNum() > 0) {
                                     deviceSync.setVisibility(View.VISIBLE);
-                                }else
+                                } else
                                     deviceSync.setVisibility(View.GONE);
                                 //进行版本升级
                                 checkDeviceVersion(robotDevice);
