@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -322,6 +323,11 @@ public class SettingExampleActivity extends RobotPenActivity
 
     }
 
+    @Override
+    public void getRecordVideoName(String s) {
+        Log.e("test","getRecordVideoName :"+s);
+    }
+
     /**
      * 接收录制中的各种状态进行处理
      */
@@ -379,5 +385,10 @@ public class SettingExampleActivity extends RobotPenActivity
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
         recordBoardView.drawLine(p);
+    }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
+
     }
 }

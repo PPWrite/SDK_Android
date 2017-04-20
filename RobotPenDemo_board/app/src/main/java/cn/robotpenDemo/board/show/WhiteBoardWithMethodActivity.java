@@ -383,4 +383,9 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             whiteBoardView.drawLine(p);//白板的绘制必须手动执行
         }
     }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
+
+    }
 }

@@ -90,14 +90,14 @@ public class MainActivity extends RobotPenActivity {
     }
 
     /**
-     * 当服务服务连接成功后进行
-     *
+     * 当服务服务连接状态回调
      * @param name
      * @param service
      */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
+        getRobotPenService().startRobotPenService(this,false);
         checkDeviceConn();
     }
 
@@ -142,5 +142,10 @@ public class MainActivity extends RobotPenActivity {
          *也可以根据x,y坐标点直接绘制
          **/
         //DeviceType dType = point.getDeviceType();//根据设备值转化为设备类型  也可以通过deviceType 直接转化
+    }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
+
     }
 }

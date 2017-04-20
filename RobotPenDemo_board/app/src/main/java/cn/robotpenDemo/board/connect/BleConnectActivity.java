@@ -587,4 +587,9 @@ public class BleConnectActivity extends RobotPenActivity{
     public void onPenServiceError(String s) {
 
     }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
+
+    }
 }

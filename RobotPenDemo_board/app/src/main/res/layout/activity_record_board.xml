@@ -155,7 +155,7 @@
             android:layout_marginLeft="2dp"
             android:background="@android:color/darker_gray"
             android:clickable="false"
-            android:text="取消" />
+            android:text="取消"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"

@@ -576,6 +576,11 @@ public class BleConnectActivity extends RobotPenActivity{
 
     }
 
+    @Override
+    public void onPageInfo(int i, int i1) {
+
+    }
+
 
     static class MyScanCallback extends RobotScanCallback {
         WeakReference<BleConnectActivity> act;
