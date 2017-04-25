@@ -135,7 +135,7 @@ public class MainActivity extends RobotPenActivity {
         connectSenceType.setText(sceneType.name());
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
         penIsRoute.setText(String.valueOf(point.isRoute()));
-        penPress.setText(point.getPressure() + "/" + point.getPressureValue());
+        penPress.setText(point.getPressure() + "/" + point.getPressureValue());// pressure 是0-1的浮点值  value是0-1023的原始值
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
         /**
