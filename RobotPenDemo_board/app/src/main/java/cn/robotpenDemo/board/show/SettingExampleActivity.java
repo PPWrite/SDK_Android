@@ -323,10 +323,10 @@ public class SettingExampleActivity extends RobotPenActivity
 
     }
 
-    @Override
+   /* @Override
     public void getRecordVideoName(String s) {
         Log.e("test","getRecordVideoName :"+s);
-    }
+    }*/
 
     /**
      * 接收录制中的各种状态进行处理
@@ -359,6 +359,11 @@ public class SettingExampleActivity extends RobotPenActivity
     @Override
     public boolean onRecordTimeChange(Date date) {
         return false;
+    }
+
+    @Override
+    public void getRecordVideoName(String s) {
+
     }
 
     @Override

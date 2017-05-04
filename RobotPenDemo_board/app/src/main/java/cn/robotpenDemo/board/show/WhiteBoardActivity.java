@@ -62,8 +62,6 @@ public class WhiteBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
-
-
     }
 
     @Override
@@ -117,7 +115,6 @@ public class WhiteBoardActivity extends RobotPenActivity
         switch (v.getId()) {
             case R.id.clearnScreen:
                 whiteBoardView.cleanScreen();
-
                 break;
         }
     }
@@ -220,6 +217,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onPenServiceError(String s) {
 
     }
+
 
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {

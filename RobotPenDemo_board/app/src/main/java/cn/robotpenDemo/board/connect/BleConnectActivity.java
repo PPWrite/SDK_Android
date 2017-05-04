@@ -395,7 +395,7 @@ public class BleConnectActivity extends RobotPenActivity {
                     if (mRobotDevice != null) {
                         String device_firmwareVer = mRobotDevice.getFirmwareVerStr();
                         String newVersion = msg.obj.toString();
-                        if (device_firmwareVer.compareTo(newVersion) > 0) { //存在新版
+                        if (device_firmwareVer.compareTo(newVersion) < 0) { //存在新版
                             deviceUpdate.setVisibility(View.VISIBLE);
                             mNewVersion = newVersion;
                         } else {
