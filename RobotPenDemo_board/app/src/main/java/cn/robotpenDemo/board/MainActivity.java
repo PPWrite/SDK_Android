@@ -25,6 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.RobotPenServiceImpl;
 import cn.robotpenDemo.board.common.ResUtils;
 import cn.robotpenDemo.board.connect.BleConnectActivity;

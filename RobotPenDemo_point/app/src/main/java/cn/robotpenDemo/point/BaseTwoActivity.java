@@ -44,10 +44,9 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         if(!result){
             Toast.makeText(BaseTwoActivity.this,"初始化失败",Toast.LENGTH_SHORT).show();
         }
-
     }
 
-
+    //
     @Override
     public boolean handleMessage(Message msg) {
         return false;
@@ -63,7 +62,6 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         adapter.release();
         mHandler.removeCallbacksAndMessages(null);
         mHandler = null;
-
     }
 
 
@@ -102,7 +100,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
     @Override
     public void onRemainBattery(int i) {
-
+        Log.e("test","电池电量："+i);
     }
 
     @Override

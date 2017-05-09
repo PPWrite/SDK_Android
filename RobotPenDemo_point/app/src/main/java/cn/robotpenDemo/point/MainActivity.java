@@ -88,14 +88,14 @@ public class MainActivity extends RobotPenActivity {
     }
 
     /**
-     * 当服务服务连接成功后进行
-     *
+     * 当服务服务连接状态回调
      * @param name
      * @param service
      */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
+        getRobotPenService().startRobotPenService(this,false);
         checkDeviceConn();
     }
 
@@ -129,9 +129,14 @@ public class MainActivity extends RobotPenActivity {
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
 
         penIsRoute.setText(String.valueOf(point.isRoute()));
-        penPress.setText(point.getPressure() + "/" + point.getPressureValue());
+        penPress.setText(point.getPressure() + "/" + point.getPressureValue());// pressure 是0-1的浮点值  value是0-1023的原始值
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
         penWindows.setText(point.getWindowX(0) + "/" + point.getWindowY(0));
+    }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
+
     }
 }

@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -92,6 +93,7 @@ public class RecordBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         recordBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         recordBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
+        Log.e("xxxx","onCreate");
     }
 
     @Override
@@ -99,11 +101,13 @@ public class RecordBoardActivity extends RobotPenActivity
         super.onResume();
         recordBoardView.initDrawArea();
         checkIntentInsertPhoto();
+        Log.e("xxxx","onResume");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e("xxxx","onDestroy");
         if (recordBoardView != null) {
             recordBoardView.dispose();
             recordBoardView = null;
@@ -115,7 +119,7 @@ public class RecordBoardActivity extends RobotPenActivity
         if (resultCode == RESULT_OK) {
             mInsertPhotoUri = null;
             mBgUri = null;
-            if (requestCode == SELECT_PICTURE && data != null) {
+            if (requestCode == SELECT_PICTURE && data != null){
                 mInsertPhotoUri = data.getData();
             }
             if (requestCode == SELECT_BG && data != null) {
@@ -126,7 +130,6 @@ public class RecordBoardActivity extends RobotPenActivity
 
     /**
      * 当服务服务连接成功后进行
-     *
      * @param name
      * @param service
      */
@@ -311,7 +314,7 @@ public class RecordBoardActivity extends RobotPenActivity
                     v.setClickable(false);
                     recordStopBut.setBackgroundColor(Color.GRAY);
                     recordStopBut.setClickable(false);
-                    recordBoardView.cancelRecord();
+//                  recordBoardView.cancelRecord();
                 }
                 break;
         }
@@ -394,7 +397,6 @@ public class RecordBoardActivity extends RobotPenActivity
     public boolean onMessage(String s, Object o) {
         return false;
     }
-
     /*
     *录制时必须实现的方法
      */
@@ -448,8 +450,14 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     @Override
-    public boolean onRecordTimeChange(Date date) {
+    public boolean onRecordTimeChange(Date date) {// 返回true 代表已处理，将不再显示记时布局
+        Log.e("xxxx","onRecordTimeChange");
         return false;
+    }
+
+    @Override
+    public void getRecordVideoName(String s) {
+        Log.e("test","getRecordVideoName :"+s);
     }
 
     @Override
@@ -480,4 +488,15 @@ public class RecordBoardActivity extends RobotPenActivity
         }
     }
 
+    @Override
+    public void onPageInfo(int i, int i1) {
+
+    }
+
+   /* @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.e("xxxx","Xxxxxxxxxxxxx");
+        this.finish();
+    }*/
 }

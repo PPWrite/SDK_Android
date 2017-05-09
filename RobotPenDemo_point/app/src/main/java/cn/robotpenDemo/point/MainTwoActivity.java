@@ -26,6 +26,7 @@ import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
  * Created by wang on 2017/3/3.
  */
 
+
 public class MainTwoActivity extends BaseTwoActivity {
 
     SettingEntity mSetting;
@@ -100,6 +101,8 @@ public class MainTwoActivity extends BaseTwoActivity {
         Log.e("test","onConnectFailed ");
     }
 
+
+
     @Override
     public void onReceiveDot(long timestamp, int x, int y, int pressure, int state) {
         super.onReceiveDot(timestamp,x,y,pressure,state);
@@ -133,7 +136,7 @@ public class MainTwoActivity extends BaseTwoActivity {
 
     @Override
     public void onRemainBattery(int percent) {
-        S.i(percent);
+        Log.e("test","电池电量："+percent);
     }
 
     @Override

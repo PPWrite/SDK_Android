@@ -18,6 +18,7 @@ import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,11 +35,14 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
@@ -326,6 +330,39 @@ public class BleConnectActivity extends RobotPenActivity{
             alert.show();
         }
     }
+
+
+    @Override
+    public void onOffLineNoteSyncFinished(String json, byte[] data) {
+        if (data != null && data.length >= 5) {
+            int num = 0, step = 1;
+            List<DevicePoint> points = new ArrayList<>();
+            DeviceType type = DeviceType.toDeviceType(mRobotDevice.getDeviceVersion());
+            DevicePoint point;
+            for (int i = 0; i <= data.length - 5; i += step) {
+                try {
+                    point = new DevicePoint(type, data, i);
+                    Log.e("test","x:"+point.getOriginalX()+" y:"+point.getOriginalY()+" pressure :"+point.getPressureValue());
+                    step = 5;//5字节为一个点数据
+                } catch (Exception e) {
+                    step = 1;//查找下一个有效字节
+                    e.printStackTrace();
+                    continue;
+                }
+
+                if (point.isLeave()) {
+                    //结束点
+                    num++;
+                    Log.v("Sync", String.format("第%d笔,共%d个点", num, points.size()));
+                    points.clear();
+                } else {
+                    points.add(point);
+                }
+            }
+            Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**--------------
      * 设备升级部分
      -----------------*/
@@ -339,7 +376,7 @@ public class BleConnectActivity extends RobotPenActivity{
                     if (mRobotDevice != null) {
                         String device_firmwareVer = mRobotDevice.getFirmwareVerStr();
                         String newVersion = msg.obj.toString();
-                        if (device_firmwareVer.compareTo(newVersion) > 0) { //存在新版
+                        if (device_firmwareVer.compareTo(newVersion)< 0) { //存在新版
                             deviceUpdate.setVisibility(View.VISIBLE);
                             mNewVersion = newVersion;
                         } else {
@@ -522,6 +559,7 @@ public class BleConnectActivity extends RobotPenActivity{
     public void onStateChanged(int i, String s) {
         switch (i) {
             case RemoteState.STATE_CONNECTED:
+                Log.e("test","STATE_CONNECTED");
                 break;
             case RemoteState.STATE_CONNECTING:
                 break;
@@ -532,6 +570,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 disconnectBut.setVisibility(View.GONE);
                 break;
             case RemoteState.STATE_DEVICE_INFO: //设备连接成功状态
+                Log.e("test","STATE_DEVICE_INFO");
                 try {
                     mPenAdapter.clearItems();
                     mPenAdapter.notifyDataSetChanged();
@@ -573,6 +612,11 @@ public class BleConnectActivity extends RobotPenActivity{
 
     @Override
     public void onPenServiceError(String s) {
+
+    }
+
+    @Override
+    public void onPageInfo(int i, int i1) {
 
     }
 
