@@ -19,9 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
-import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.symbol.DeviceType;
-import cn.robotpen.model.symbol.SceneType;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
@@ -35,8 +33,6 @@ public class MainActivity extends RobotPenActivity {
     SettingEntity mSetting;
     @BindView(R.id.connect_deviceType)
     TextView connectDeviceType;
-    @BindView(R.id.connect_senceType)
-    TextView connectSenceType;
     @BindView(R.id.connect_deviceSize)
     TextView connectDeviceSize;
     @BindView(R.id.pen_isRoute)
@@ -45,6 +41,8 @@ public class MainActivity extends RobotPenActivity {
     TextView penPress;
     @BindView(R.id.pen_original)
     TextView penOriginal;
+    @BindView(R.id.pen_windows)
+    TextView penWindows;
     @BindView(R.id.connect_offest)
     TextView connectOffest;
     @BindView(R.id.gotoBle)
@@ -126,21 +124,14 @@ public class MainActivity extends RobotPenActivity {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         Log.e("test","x: "+x+"  y:"+y);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
-        /**
-         *DevicePoint 将会获取更多的信息
-         **/
+
         connectDeviceType.setText(point.getDeviceType().name());
-        boolean screenSetting = mSetting.isDirection();//获取横竖屏设置 默认为竖屏
-        SceneType sceneType = SceneType.getSceneType(screenSetting, point.getDeviceType());//false为竖屏
-        connectSenceType.setText(sceneType.name());
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
+
         penIsRoute.setText(String.valueOf(point.isRoute()));
         penPress.setText(point.getPressure() + "/" + point.getPressureValue());
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
-        /**
-         *也可以根据x,y坐标点直接绘制
-         **/
-        //DeviceType dType = point.getDeviceType();//根据设备值转化为设备类型  也可以通过deviceType 直接转化
+        penWindows.setText(point.getWindowX(0) + "/" + point.getWindowY(0));
     }
 }

@@ -4,16 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,13 +17,9 @@ import com.codingmaster.slib.S;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
-import cn.robotpen.model.symbol.SceneType;
-import cn.robotpen.pen.adapter.OnPenConnectListener;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
-import cn.robotpenDemo.point.connect.BleConnectActivity;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
 
 /**
@@ -40,8 +31,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     SettingEntity mSetting;
     @BindView(R.id.connect_deviceType)
     TextView connectDeviceType;
-    @BindView(R.id.connect_senceType)
-    TextView connectSenceType;
     @BindView(R.id.connect_deviceSize)
     TextView connectDeviceSize;
     @BindView(R.id.pen_isRoute)
@@ -50,6 +39,8 @@ public class MainTwoActivity extends BaseTwoActivity {
     TextView penPress;
     @BindView(R.id.pen_original)
     TextView penOriginal;
+    @BindView(R.id.pen_windows)
+    TextView penWindows;
     @BindView(R.id.connect_offest)
     TextView connectOffest;
     @BindView(R.id.gotoBle)
@@ -120,14 +111,13 @@ public class MainTwoActivity extends BaseTwoActivity {
          *
          **/
         connectDeviceType.setText(point.getDeviceType().name());
-        boolean screenSetting = mSetting.isDirection();//获取横竖屏设置 默认为竖屏
-        SceneType sceneType = SceneType.getSceneType(screenSetting, point.getDeviceType());//false为竖屏
-        connectSenceType.setText(sceneType.name());
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
+
         penIsRoute.setText(String.valueOf(point.isRoute()));
         penPress.setText(point.getPressure() + "/" + point.getPressureValue());
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
+        penWindows.setText(point.getWindowX(0) + "/" + point.getWindowY(0));
     }
 
     @Override
