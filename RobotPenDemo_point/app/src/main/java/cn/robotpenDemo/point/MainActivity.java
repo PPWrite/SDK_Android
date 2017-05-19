@@ -75,14 +75,12 @@ public class MainActivity extends RobotPenActivity {
     public void onStateChanged(int i, String s) {
         switch (i) {
             case RemoteState.STATE_CONNECTED:
-                Log.e("test","STATE_CONNECTED ");
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
                 //whiteBoardView.initDrawArea();
                 checkDeviceConn();
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开
-                Log.e("test","STATE_DISCONNECTED ");
                 break;
         }
     }

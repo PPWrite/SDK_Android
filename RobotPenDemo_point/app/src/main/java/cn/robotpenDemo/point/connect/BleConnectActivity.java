@@ -579,7 +579,6 @@ public class BleConnectActivity extends RobotPenActivity{
                 disconnectBut.setVisibility(View.GONE);
                 break;
             case RemoteState.STATE_DEVICE_INFO: //设备连接成功状态
-                Log.e("test","STATE_DEVICE_INFO");
                 try {
                     mPenAdapter.clearItems();
                     mPenAdapter.notifyDataSetChanged();

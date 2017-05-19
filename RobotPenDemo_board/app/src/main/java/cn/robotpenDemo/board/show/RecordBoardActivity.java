@@ -93,7 +93,6 @@ public class RecordBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         recordBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         recordBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
-        Log.e("xxxx","onCreate");
     }
 
     @Override
@@ -101,13 +100,11 @@ public class RecordBoardActivity extends RobotPenActivity
         super.onResume();
         recordBoardView.initDrawArea();
         checkIntentInsertPhoto();
-        Log.e("xxxx","onResume");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("xxxx","onDestroy");
         if (recordBoardView != null) {
             recordBoardView.dispose();
             recordBoardView = null;
@@ -451,13 +448,11 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public boolean onRecordTimeChange(Date date) {// 返回true 代表已处理，将不再显示记时布局
-        Log.e("xxxx","onRecordTimeChange");
         return false;
     }
 
     @Override
     public void getRecordVideoName(String s) {
-        Log.e("test","getRecordVideoName :"+s);
     }
 
     @Override

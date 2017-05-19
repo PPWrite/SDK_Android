@@ -80,7 +80,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onPenServiceStarted() {
         super.onPenServiceStarted();
-        Log.e("test","onPenServiceStarted ");
 //            S.i("");
     }
 
@@ -91,14 +90,12 @@ public class MainTwoActivity extends BaseTwoActivity {
         super.onConnected(penType);
         S.i(penType);
         this.deviceType=penType;
-        Log.e("test","STATE_CONNECTED ");
     }
 
     @Override
     public void onConnectFailed(int reasonCode) {
         super.onConnectFailed(reasonCode);
         S.i(reasonCode);
-        Log.e("test","onConnectFailed ");
     }
 
 
@@ -126,7 +123,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onDisconnected() {
         S.i("");
-        Log.e("test","onDisconnected ");
     }
 
     @Override

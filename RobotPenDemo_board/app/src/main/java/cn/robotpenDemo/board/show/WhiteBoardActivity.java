@@ -102,7 +102,6 @@ public class WhiteBoardActivity extends RobotPenActivity
                     if (whiteBoardView.getFrameSizeObject().getDeviceType() != type) {
                         mDeDeviceType = type;
                         mNoteKey = NoteEntity.KEY_NOTEKEY_TMP + "_" + mDeDeviceType.name();
-                        Log.i("test","mNoteKey:"+mNoteKey);
                     }
                 }
             } catch (RemoteException e) {
@@ -171,7 +170,6 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public String getNoteKey() {
-        Log.w("test","mNoteKey:"+mNoteKey);
         return mNoteKey;
     }
 
