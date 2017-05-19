@@ -76,7 +76,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
      */
     public static final String SP_LAST_PAIRED = "last_paired_device";
     /**
-     * 记录配对信息
+     * 记录配对信息0
      */
     public static final String SP_PAIRED_DEVICE = "sp_paird";
     /**
@@ -148,7 +148,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     private void initSuccess() {
         try {
             if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
-                statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getProductName());
+                statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
                 disconnectBut.setVisibility(View.VISIBLE);
                 scanBut.setVisibility(View.GONE);
             }
@@ -220,7 +220,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         scanBut.setVisibility(View.GONE);
         try {
             if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
-                statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getProductName());
+                statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
             }
         } catch (RemoteException e) {
             e.printStackTrace();

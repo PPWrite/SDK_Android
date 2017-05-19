@@ -428,7 +428,7 @@ public class RecordBoardActivity extends RobotPenActivity
         switch (recordState) {
             case START:
                 break;
-            case CANCEL:
+//            case CANCEL:
             case END:
                 break;
             case PAUSE:

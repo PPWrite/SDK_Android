@@ -107,4 +107,15 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     public void onOfflineDataReceived(String s, boolean b) {
 
     }
+
+
+    @Override
+    public void onOfflineSyncStart(String head) {
+
+    }
+
+    @Override
+    public void onOfflienSyncProgress(String key, int total, int progress) {
+
+    }
 }

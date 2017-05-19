@@ -247,7 +247,7 @@ public class BleConnectActivity extends RobotPenActivity{
         try {
             RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice(); //获取目前连接的设备
             if (robotDevice != null) {//已连接设备
-                statusText.setText("已连接设备: " + robotDevice.getProductName());
+                statusText.setText("已连接设备: " + robotDevice.getName());
                 if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //已连接设备
                     Toast.makeText(this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();
                     scanBut.setVisibility(View.GONE);
@@ -331,6 +331,15 @@ public class BleConnectActivity extends RobotPenActivity{
         }
     }
 
+    @Override
+    public void onOffLineNoteHeadReceived(String json) {
+        super.onOffLineNoteHeadReceived(json);
+    }
+
+    @Override
+    public void onSyncProgress(String key, int total, int progress) {
+        super.onSyncProgress(key, total, progress);
+    }
 
     @Override
     public void onOffLineNoteSyncFinished(String json, byte[] data) {
@@ -419,7 +428,7 @@ public class BleConnectActivity extends RobotPenActivity{
      * 检查设备固件版本
      */
     private void checkDeviceVersion(RobotDevice device) {
-        final String otaFileName = device.getProductName() + "_svrupdate.txt";
+        final String otaFileName = device.getName() + "_svrupdate.txt";
         new Thread() {
             public void run() {
                 int code;
@@ -506,7 +515,7 @@ public class BleConnectActivity extends RobotPenActivity{
      * @return
      */
     private String generatorFirmwareUrl(RobotDevice device, String lastFirmwareVer) {
-        return FIREWARE_FILE_HOST + device.getProductName() + "_" + lastFirmwareVer + ".bin";
+        return FIREWARE_FILE_HOST + device.getName() + "_" + lastFirmwareVer + ".bin";
     }
 
     /**
@@ -579,7 +588,7 @@ public class BleConnectActivity extends RobotPenActivity{
                         closeProgress();
                         mRobotDevice = robotDevice;
                         if (robotDevice.getDeviceVersion() > 0) {//针对固件bug进行解决 STATE_DEVICE_INFO 返回两次首次无设备信息第二次会上报设备信息
-                            statusText.setText("已连接设备: " + robotDevice.getProductName());
+                            statusText.setText("已连接设备: " + robotDevice.getName());
                             if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //如果连接上的是usb设备
                                 Toast.makeText(BleConnectActivity.this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();
                                 scanBut.setVisibility(View.GONE);

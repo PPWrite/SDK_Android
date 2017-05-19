@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -50,7 +51,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_white_board);
         ButterKnife.bind(this);
-       /* if (android.os.Build.VERSION.SDK_INT<23){
+        /*if (android.os.Build.VERSION.SDK_INT<23){
             //运行在主线程执行网络请求
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads().detectDiskWrites().detectNetwork()
@@ -101,6 +102,7 @@ public class WhiteBoardActivity extends RobotPenActivity
                     if (whiteBoardView.getFrameSizeObject().getDeviceType() != type) {
                         mDeDeviceType = type;
                         mNoteKey = NoteEntity.KEY_NOTEKEY_TMP + "_" + mDeDeviceType.name();
+                        Log.i("test","mNoteKey:"+mNoteKey);
                     }
                 }
             } catch (RemoteException e) {
@@ -169,6 +171,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public String getNoteKey() {
+        Log.w("test","mNoteKey:"+mNoteKey);
         return mNoteKey;
     }
 
@@ -221,7 +224,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
-        //state 0x00 离开  0x10 悬空  0x01
+        //state 0x00 离开  0x10 悬空  0x11 按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
