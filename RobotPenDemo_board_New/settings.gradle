@@ -1,0 +1,1 @@
+include ':app', ':robotpensdk', ':robotview_lib','robotrecord_lib','robotpen_lib','robotfile_lib'
