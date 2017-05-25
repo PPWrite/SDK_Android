@@ -141,6 +141,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         if (getPenServiceBinder() != null) {
             try {
                 RobotDevice device = getPenServiceBinder().getConnectedDevice();
+//                getPenServiceBinder().editDeviceName(string) // 修改设备名称
                 if (device != null) {
                     whiteBoardView.setIsTouchWrite(false);
                     DeviceType type = DeviceType.toDeviceType(device.getDeviceVersion());
@@ -169,7 +170,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         //检查是否有需要插入的图片uri
         if (null != mInsertPhotoUri) {
             whiteBoardView.insertPhoto(getRealFilePath(WhiteBoardWithMethodActivity.this,mInsertPhotoUri));
-            whiteBoardView.startPhotoEdit(true); //插入图片后，设置图片可以编辑状态
+//            whiteBoardView.startPhotoEdit(false); //插入图片后，设置图片可以编辑状态
             mInsertPhotoUri = null;
         }
         if(null != mBgUri){
@@ -265,6 +266,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                         }).show();
                 break;
             case R.id.cleanLineBut:
+//                whiteBoardView.startPhotoEdit(false); //插入图片后，设置图片可以编辑状态
                 whiteBoardView.cleanTrail();
                 break;
             case R.id.cleanPhotoBut:

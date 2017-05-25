@@ -87,6 +87,8 @@ public class RecordBoardActivity extends RobotPenActivity
     Button gotoProBut;
     @BindView(R.id.gotoNextBut)
     Button gotoNextBut;
+    @BindView(R.id.isRubber)
+    Button rubber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,7 +189,7 @@ public class RecordBoardActivity extends RobotPenActivity
             , R.id.saveScreenBut, R.id.cleanPhotoBut
             , R.id.innerbgBut, R.id.removeBgBut,R.id.bgScaleTypeBut
             , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut
-            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut})
+            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut,R.id.isRubber})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.changePenBut: //更改笔粗细
@@ -328,6 +330,9 @@ public class RecordBoardActivity extends RobotPenActivity
 //                  recordBoardView.cancelRecord();
                 }
                 break;
+            case R.id.isRubber:
+                isRubber=30;
+                break;
         }
     }
 
@@ -392,7 +397,7 @@ public class RecordBoardActivity extends RobotPenActivity
     @Override
     public float getIsRubber() {
         return isRubber;
-    } //非0时即为橡皮擦
+    } //非0时即为橡皮擦 具体数字代表橡皮擦宽度
 
     @Override
     public boolean getIsPressure() {
@@ -498,14 +503,15 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public boolean onRecordTimeChange(Date date) {// 返回true 代表已处理，将不再显示记时布局
-        Log.e("xxxx","onRecordTimeChange");
+
         return false;
     }
 
-   /* @Override
+    @Override
     public void getRecordVideoName(String s) {
-        Log.e("test","getRecordVideoName :"+s);
-    }*/
+
+    }
+
 
     @Override
     public void onStateChanged(int i, String s) {
@@ -543,6 +549,8 @@ public class RecordBoardActivity extends RobotPenActivity
     public void onPageInfo(int i, int i1) {
 
     }
+
+
 
    /* @Override
     public void onBackPressed() {

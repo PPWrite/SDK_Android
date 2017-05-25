@@ -199,5 +199,13 @@
             android:layout_marginLeft="2dp"
             android:clickable="false"
             android:text="下一页" />
+        <Button
+            android:id="@+id/isRubber"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="2dp"
+            android:clickable="false"
+            android:text="橡皮擦" />
     </LinearLayout>
 </RelativeLayout>
