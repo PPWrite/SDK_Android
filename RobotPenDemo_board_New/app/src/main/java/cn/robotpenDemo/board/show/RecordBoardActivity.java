@@ -58,7 +58,6 @@ public class RecordBoardActivity extends RobotPenActivity
     Uri mInsertPhotoUri = null;
     Uri mBgUri = null;
     int butFlag = 0;
-
     @BindView(R.id.recordBoardView)
     RecordBoardView recordBoardView;
     @BindView(R.id.viewWindow)
@@ -89,6 +88,7 @@ public class RecordBoardActivity extends RobotPenActivity
     Button gotoNextBut;
     @BindView(R.id.isRubber)
     Button rubber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -480,7 +480,7 @@ public class RecordBoardActivity extends RobotPenActivity
         switch (recordState) {
             case START:
                 break;
-            case CANCEL:
+//            case CANCEL:
             case END:
                 break;
             case PAUSE:
@@ -539,9 +539,10 @@ public class RecordBoardActivity extends RobotPenActivity
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察，止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-//            recordBoardView.drawLine(p);
-            DeviceType type = DeviceType.toDeviceType(deviceType);
-            recordBoardView.drawDevicePoint(type,x,y,presure,state);
+            recordBoardView.drawLine(p);
+//            DeviceType type = DeviceType.toDeviceType(deviceType);
+//            recordBoardView.drawDevicePoint(type,x,y,presure,state);
+//            recordBoardView.drawLine();
         }
     }
 

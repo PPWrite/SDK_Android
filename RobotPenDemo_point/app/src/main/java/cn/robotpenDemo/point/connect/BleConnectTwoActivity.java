@@ -49,7 +49,6 @@ import cn.robotpenDemo.point.R;
 
 public class BleConnectTwoActivity extends BaseTwoActivity {
     private final UUID SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
-
     @BindView(R.id.statusText)
     TextView statusText;
     @BindView(R.id.listview)
@@ -64,6 +63,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     Button deviceUpdate;
     @BindView(R.id.deviceSync)
     Button deviceSync;
+
 
     private PenAdapter mPenAdapter;
     //    SharedPreferences lastSp;
@@ -170,6 +170,9 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                     e.printStackTrace();
                 }
                 break;
+            case R.id.deviceSync:
+                adapter.startSyncOffLineNote();
+                break;
         }
     }
 
@@ -216,23 +219,59 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
 
     @Override
     public void onConnected(int i) {
-        disconnectBut.setVisibility(View.VISIBLE);
-        scanBut.setVisibility(View.GONE);
-        try {
-            if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
-                statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        Log.e("test","onConnected");
+        mHandler.sendEmptyMessage(0x1001);
     }
 
     @Override
     public void onDisconnected() {
-        scanBut.setVisibility(View.VISIBLE);
-        disconnectBut.setVisibility(View.GONE);
-        statusText.setText("未连接设备!");
+        Log.e("test","onDisconnected");
+        mHandler.sendEmptyMessage(0x1000);
     }
+
+    @Override
+    public void onConnectFailed(int i) {
+        super.onConnectFailed(i);
+        Log.e("test","onConnectFailed");
+    }
+
+    @Override
+    public void onOfflineDataReceived(String s, boolean b) {
+        super.onOfflineDataReceived(s, b);
+    }
+
+
+
+    @Override
+    public void onOfflienSyncProgress(String key, int total, int progress) {
+        super.onOfflienSyncProgress(key, total, progress);
+        Log.e("test","onOfflienSyncProgress");
+    }
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0x1000:
+                    scanBut.setVisibility(View.VISIBLE);
+                    disconnectBut.setVisibility(View.GONE);
+                    statusText.setText("未连接设备!");
+                    break;
+                case 0x1001:
+                    disconnectBut.setVisibility(View.VISIBLE);
+                    scanBut.setVisibility(View.GONE);
+                    try {
+                        if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
+                            statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {

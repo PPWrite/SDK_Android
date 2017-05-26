@@ -309,36 +309,45 @@ public class BleConnectActivity extends RobotPenActivity{
      * 检查存储笔记数
      */
     private void checkStorageNoteNum(RobotDevice device) {
-        int num = device.getOfflineNoteNum();
-        if (num > 0) {
-            deviceSync.setVisibility(View.VISIBLE);
-            AlertDialog.Builder alert = new AlertDialog.Builder(BleConnectActivity.this);
-            alert.setTitle("提示");
-            alert.setMessage("共有" + num + "条数据可以同步！");
-            alert.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        getPenServiceBinder().startSyncOffLineNote();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+       /* try {
+            getPenServiceBinder().startSyncOffLineNote();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }*/
+        if(device!=null) {
+            int num = device.getOfflineNoteNum();
+            if (num > 0) {
+                deviceSync.setVisibility(View.VISIBLE);
+                AlertDialog.Builder alert = new AlertDialog.Builder(BleConnectActivity.this);
+                alert.setTitle("提示");
+                alert.setMessage("共有" + num + "条数据可以同步！");
+                alert.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try{
+                            getPenServiceBinder().startSyncOffLineNote();
+                        }catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
                     }
-                    dialog.dismiss();
-                }
-            });
-            alert.setNegativeButton("取消", null);
-            alert.show();
+                });
+                alert.setNegativeButton("取消", null);
+                alert.show();
+            }
         }
     }
 
     @Override
     public void onOffLineNoteHeadReceived(String json) {
         super.onOffLineNoteHeadReceived(json);
+        Log.e("test","onOffLineNoteHeadReceived");
     }
 
     @Override
     public void onSyncProgress(String key, int total, int progress) {
         super.onSyncProgress(key, total, progress);
+        Log.e("test","onSyncProgress");
     }
 
     @Override
@@ -370,6 +379,7 @@ public class BleConnectActivity extends RobotPenActivity{
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
         }
+        Log.e("test","onOffLineNoteSyncFinished");
     }
 
     /**--------------
@@ -551,6 +561,7 @@ public class BleConnectActivity extends RobotPenActivity{
      **/
     private void showProgress(String flag) {
         mProgressDialog = ProgressDialog.show(this, "", flag + "……", true);
+        mProgressDialog.setCanceledOnTouchOutside(true);
     }
 
     /**
@@ -573,6 +584,7 @@ public class BleConnectActivity extends RobotPenActivity{
             case RemoteState.STATE_CONNECTING:
                 break;
             case RemoteState.STATE_DISCONNECTED: //设备断开
+                Log.e("test","STATE_DISCONNECTED");
                 closeProgress();
                 statusText.setText("未连接设备！");
                 scanBut.setVisibility(View.VISIBLE);
@@ -601,7 +613,7 @@ public class BleConnectActivity extends RobotPenActivity{
                                 if (robotDevice.getOfflineNoteNum() > 0) {
                                     deviceSync.setVisibility(View.VISIBLE);
                                 } else
-                                    deviceSync.setVisibility(View.GONE);
+                                    deviceSync.setVisibility(View.VISIBLE);
                                 //进行版本升级
                                 checkDeviceVersion(robotDevice);
                             }
@@ -648,5 +660,11 @@ public class BleConnectActivity extends RobotPenActivity{
         public void onFailed(int i) {
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        closeProgress();
     }
 }

@@ -368,7 +368,7 @@ public class BleConnectActivity extends RobotPenActivity {
 
     @Override
     public void onOffLineNoteSyncFinished(String json, byte[] data) {
-        if (data != null && data.length >= 5) {
+        /*if (data != null && data.length >= 5) {
             int num = 0, step = 1;
             List<DevicePoint> points = new ArrayList<>();
             DeviceType type = DeviceType.toDeviceType(mRobotDevice.getDeviceVersion());
@@ -393,7 +393,7 @@ public class BleConnectActivity extends RobotPenActivity {
                 }
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     /**--------------

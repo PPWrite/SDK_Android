@@ -429,11 +429,13 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察,  防止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-//            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
-            DeviceType type = DeviceType.toDeviceType(deviceType);
-            whiteBoardView.drawDevicePoint(type,x,y,presure,state);
+            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+//            DeviceType type = DeviceType.toDeviceType(deviceType);
+//            whiteBoardView.drawDevicePoint(type,x,y,presure,state);
         }
     }
+
+
 
     @Override
     public void onPageInfo(int i, int i1) {

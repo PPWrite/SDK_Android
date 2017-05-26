@@ -118,4 +118,6 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     public void onOfflienSyncProgress(String key, int total, int progress) {
 
     }
+
+
 }

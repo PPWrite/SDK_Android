@@ -25,7 +25,6 @@ import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
-import cn.robotpen.utils.log.CLog;
 import cn.robotpen.views.widget.WhiteBoardView;
 import cn.robotpenDemo.board.MyApplication;
 import cn.robotpenDemo.board.R;
@@ -127,10 +126,8 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
 
     public boolean isScreenLanscape() {
-
         Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
         int ori = mConfiguration.orientation ; //获取屏幕方向
-
         if(ori == mConfiguration.ORIENTATION_LANDSCAPE){
             return true;//横屏
         }else if(ori == mConfiguration.ORIENTATION_PORTRAIT){
@@ -238,14 +235,14 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         //state 0x00 离开  0x10 悬空  0x01
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        CLog.w(String.format("the deviceType:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
+//        CLog.w(String.format("the deviceType:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
         //TEST 测试数据
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-//            whiteBoardView.drawLine();//白板的绘制必须手动执行
+            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
 //            if(whiteBoardView!=null) {
-                DeviceType type = DeviceType.toDeviceType(deviceType);
-                whiteBoardView.drawDevicePoint(type, x, y, presure, state);
+//                DeviceType type = DeviceType.toDeviceType(deviceType);
+//                whiteBoardView.drawDevicePoint(type, x, y, presure, state);
 //            }
         }
     }
