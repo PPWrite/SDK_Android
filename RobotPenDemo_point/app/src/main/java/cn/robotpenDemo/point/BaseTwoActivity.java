@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+
 import cn.robotpen.pen.adapter.OnPenConnectListener;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
+import cn.robotpenDemo.point.connect.BytesHelper;
 
 /**
  * Created by wang on 2017/3/3.
@@ -34,7 +37,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
             adapter = new RobotPenAdapter<BaseTwoActivity, String>(this, this) {
                 @Override
                 protected String convert(byte[] bytes) {
-                    return new String(bytes);
+                        return new BytesHelper().bytes2Str(bytes);
                 }
             };
         } catch (SecurityException e) {
@@ -116,6 +119,11 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
     @Override
     public void onOfflienSyncProgress(String key, int total, int progress) {
+
+    }
+
+    @Override
+    public void onOffLineNoteSyncFinished(String json, byte[] data) {
 
     }
 

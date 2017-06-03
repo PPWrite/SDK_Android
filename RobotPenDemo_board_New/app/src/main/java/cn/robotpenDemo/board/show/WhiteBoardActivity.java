@@ -63,6 +63,8 @@ public class WhiteBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//默认用手输入
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
+        whiteBoardView.setLoadIgnorePhoto(false);
+        whiteBoardView.setIsTouchSmooth(false);
     }
 
     @Override

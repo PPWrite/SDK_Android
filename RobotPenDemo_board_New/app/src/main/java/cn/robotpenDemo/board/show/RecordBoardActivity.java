@@ -36,6 +36,7 @@ import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpen.record.widget.RecordBoardView;
+import cn.robotpen.views.module.NoteManageModule;
 import cn.robotpen.views.widget.WhiteBoardView;
 import cn.robotpenDemo.board.MyApplication;
 import cn.robotpenDemo.board.R;
@@ -88,7 +89,7 @@ public class RecordBoardActivity extends RobotPenActivity
     Button gotoNextBut;
     @BindView(R.id.isRubber)
     Button rubber;
-
+    NoteManageModule mNoteManageModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,10 @@ public class RecordBoardActivity extends RobotPenActivity
         recordBoardView.setIsTouchWrite(true);
         recordBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
         recordBoardView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
+        recordBoardView.setLoadIgnorePhoto(false);
+        recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
+        recordBoardView.setIsTouchSmooth(false);
     }
 
     @Override
@@ -152,7 +157,7 @@ public class RecordBoardActivity extends RobotPenActivity
                     //判断当前设备与笔记设备是否一致
                     if (recordBoardView.getFrameSizeObject().getDeviceType() != type) {
                         mDeDeviceType = type;
-                        mNoteKey = NoteEntity.KEY_NOTEKEY_TMP + "_" + mDeDeviceType.name();
+                        mNoteKey = NoteEntity.KEY_NOTEKEY_TMP ;// "_" + mDeDeviceType.name()
                     }
                 }else {
                     recordBoardView.setIsTouchWrite(true);
@@ -165,6 +170,7 @@ public class RecordBoardActivity extends RobotPenActivity
         }
         //都需要刷新白板
         recordBoardView.initDrawArea();
+
     }
 
     /**
@@ -174,7 +180,7 @@ public class RecordBoardActivity extends RobotPenActivity
         //检查是否有需要插入的图片uri
         if (null != mInsertPhotoUri) {
             recordBoardView.insertPhoto(getRealFilePath(RecordBoardActivity.this,mInsertPhotoUri));
-            recordBoardView.startPhotoEdit(true); //插入图片后，设置图片可以编辑状态
+//            recordBoardView.startPhotoEdit(true); //插入图片后，设置图片可以编辑状态
             mInsertPhotoUri = null;
         }
         if (null != mBgUri) {
@@ -189,7 +195,7 @@ public class RecordBoardActivity extends RobotPenActivity
             , R.id.saveScreenBut, R.id.cleanPhotoBut
             , R.id.innerbgBut, R.id.removeBgBut,R.id.bgScaleTypeBut
             , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut
-            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut,R.id.isRubber})
+            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut,R.id.isRubber,R.id.exit_edit})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.changePenBut: //更改笔粗细
@@ -252,7 +258,6 @@ public class RecordBoardActivity extends RobotPenActivity
                 recordBoardView.startPhotoEdit(false);// 退出图片编辑模式，否则此时点击图平铺会崩溃
                 break;
             case R.id.innerPhotoBut:
-                recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(Intent.createChooser(intent, "选择图片"), SELECT_PICTURE);
                 //支持多个图片的插入 所以插入图片成功后需要改变序号
@@ -261,7 +266,6 @@ public class RecordBoardActivity extends RobotPenActivity
                 recordBoardView.delCurrEditPhoto();//删除当前编辑图片
                 break;
             case R.id.innerbgBut:
-                recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
                 Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(Intent.createChooser(intent2, "选择背景"), SELECT_BG);
                 break;
@@ -333,8 +337,12 @@ public class RecordBoardActivity extends RobotPenActivity
             case R.id.isRubber:
                 isRubber=30;
                 break;
+            case R.id.exit_edit:
+                recordBoardView.startPhotoEdit(false);
+                break;
         }
     }
+
 
     public boolean isScreenLanscape() {
 
@@ -540,6 +548,7 @@ public class RecordBoardActivity extends RobotPenActivity
         if(isRubber==0) {// isRubber==0  现在没用橡皮察，止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
             recordBoardView.drawLine(p);
+//            recordBoardView.setPointerIcon();
 //            DeviceType type = DeviceType.toDeviceType(deviceType);
 //            recordBoardView.drawDevicePoint(type,x,y,presure,state);
 //            recordBoardView.drawLine();

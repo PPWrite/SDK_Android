@@ -93,6 +93,8 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//允许在屏幕上直接绘制
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
+        whiteBoardView.setLoadIgnorePhoto(false);
+        whiteBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
     }
 
     @Override
@@ -214,7 +216,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             , R.id.innerPhotoBut, R.id.photoScaleTypeBut, R.id.removePhotoBut
             , R.id.saveScreenBut
             , R.id.innerbgBut, R.id.bgScaleTypeBut, R.id.removeBgBut
-            , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut})
+            , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut,R.id.exit_edit})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.changePenBut: //更改笔粗细
@@ -313,6 +315,9 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 break;
             case R.id.gotoNextBut:
                 whiteBoardView.nextBlock();
+                break;
+            case R.id.exit_edit:
+                whiteBoardView.startPhotoEdit(false);
                 break;
         }
     }

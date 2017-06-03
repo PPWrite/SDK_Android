@@ -27,11 +27,14 @@ import android.widget.Toast;
 import com.codingmaster.slib.S;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
@@ -64,7 +67,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @BindView(R.id.deviceSync)
     Button deviceSync;
 
-
+    boolean isConnected = false;
     private PenAdapter mPenAdapter;
     //    SharedPreferences lastSp;
     SharedPreferences pairedSp;
@@ -126,6 +129,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         });
         scanCallback = new BleConnectTwoActivity.MyScanCallback(this);
         robotScannerCompat = new RobotScannerCompat(scanCallback);
+        isConnected=false;
 
     }
 
@@ -145,9 +149,13 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         super.onStop();
     }
 
+
+
     private void initSuccess() {
         try {
             if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
+                isConnected=true;
+                mRobotDevice=adapter.getRobotServiceBinder().getConnectedDevice();
                 statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
                 disconnectBut.setVisibility(View.VISIBLE);
                 scanBut.setVisibility(View.GONE);
@@ -171,7 +179,10 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 }
                 break;
             case R.id.deviceSync:
-                adapter.startSyncOffLineNote();
+                if(isConnected)
+                    adapter.startSyncOffLineNote();
+                else
+                    Toast.makeText(this, "请先连接蓝牙", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -220,12 +231,14 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onConnected(int i) {
         Log.e("test","onConnected");
+        isConnected=true;
         mHandler.sendEmptyMessage(0x1001);
     }
 
     @Override
     public void onDisconnected() {
         Log.e("test","onDisconnected");
+        isConnected=false;
         mHandler.sendEmptyMessage(0x1000);
     }
 
@@ -238,14 +251,46 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onOfflineDataReceived(String s, boolean b) {
         super.onOfflineDataReceived(s, b);
+        Log.e("test","onOfflineDataReceived s:"+s +"     b :"+b);
     }
 
+    @Override
+    public void onOffLineNoteSyncFinished(String json, byte[] data) {
+        super.onOffLineNoteSyncFinished(json, data);
+        if (data != null && data.length >= 5) {
+            int num = 0, step = 1;
+            List<DevicePoint> points = new ArrayList<>();
+            DeviceType type = DeviceType.toDeviceType(mRobotDevice.getDeviceVersion());
+            DevicePoint point;
+            for (int i = 0; i <= data.length - 5; i += step) {
+                try {
+                    point = new DevicePoint(type, data, i);
+                    Log.e("test","x:"+point.getOriginalX()+" y:"+point.getOriginalY()+" pressure :"+point.getPressureValue());
+                    step = 5;//5字节为一个点数据
+                } catch (Exception e) {
+                    step = 1;//查找下一个有效字节
+                    e.printStackTrace();
+                    continue;
+                }
 
+                if (point.isLeave()) {
+                    //结束点
+                    num++;
+                    Log.v("Sync", String.format("第%d笔,共%d个点", num, points.size()));
+                    points.clear();
+                } else {
+                    points.add(point);
+                }
+            }
+            Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
+        }
+        Log.e("test","onOffLineNoteSyncFinished");
+    }
 
     @Override
     public void onOfflienSyncProgress(String key, int total, int progress) {
         super.onOfflienSyncProgress(key, total, progress);
-        Log.e("test","onOfflienSyncProgress");
+        Log.e("test","onOfflienSyncProgress  key:"+key+" total: "+total+" progress:"+progress);
     }
 
     private Handler mHandler = new Handler(){
@@ -276,6 +321,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        isConnected=false;
     }
 
     public void addRobotDevice2list(BluetoothDevice bluetoothDevice) {
@@ -324,4 +370,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     public void onBackPressed() {
        this.finish();
     }
+
+
 }

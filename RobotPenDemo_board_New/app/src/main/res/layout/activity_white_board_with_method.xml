@@ -152,6 +152,14 @@
             android:layout_marginLeft="2dp"
             android:clickable="false"
             android:text="下一页" />
+        <Button
+            android:id="@+id/exit_edit"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="2dp"
+            android:clickable="false"
+            android:text="退出编辑" />
     </LinearLayout>
 
     <LinearLayout
