@@ -103,7 +103,7 @@ public class RecordBoardActivity extends RobotPenActivity
         mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
-        recordBoardView.setIsTouchSmooth(false);
+//        recordBoardView.setIsTouchSmooth(false);
     }
 
     @Override
@@ -148,6 +148,7 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     public void checkDeviceConn() {
+        Log.e("test","checkDeviceConn checkDeviceConn");
         if (getPenServiceBinder() != null) {
             try {
                 RobotDevice device = getPenServiceBinder().getConnectedDevice();
@@ -439,7 +440,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 recordBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-                checkDeviceConn();
+//                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;

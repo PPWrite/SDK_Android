@@ -64,7 +64,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         whiteBoardView.setIsTouchWrite(true);//默认用手输入
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
         whiteBoardView.setLoadIgnorePhoto(false);
-        whiteBoardView.setIsTouchSmooth(false);
+//        whiteBoardView.setIsTouchSmooth(false);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class WhiteBoardActivity extends RobotPenActivity
                 whiteBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-                checkDeviceConn();
+//                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;

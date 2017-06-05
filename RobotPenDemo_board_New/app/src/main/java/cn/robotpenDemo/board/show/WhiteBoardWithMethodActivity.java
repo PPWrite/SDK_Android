@@ -387,7 +387,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 whiteBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-                checkDeviceConn();
+//                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
