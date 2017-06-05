@@ -103,7 +103,8 @@ public class RecordBoardActivity extends RobotPenActivity
         mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
-//        recordBoardView.setIsTouchSmooth(false);
+        recordBoardView.setIsTouchSmooth(false);
+//        recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
     }
 
     @Override
