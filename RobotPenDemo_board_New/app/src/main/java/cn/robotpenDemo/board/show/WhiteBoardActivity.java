@@ -99,21 +99,24 @@ public class WhiteBoardActivity extends RobotPenActivity
             try {
                 RobotDevice device = getPenServiceBinder().getConnectedDevice();
                 if (device != null) {
-                    whiteBoardView.setIsTouchWrite(false);
+//
                     DeviceType type = DeviceType.toDeviceType(device.getDeviceVersion());
+                    Log.e("test","recordBoardView.isTouchWrite() "+whiteBoardView.isTouchWrite() );
+                    whiteBoardView.setIsTouchWrite(false);
+                    Log.e("test","recordBoardView.isTouchWrite() 2"+whiteBoardView.isTouchWrite() );
                     //判断当前设备与笔记设备是否一致
                     if (whiteBoardView.getFrameSizeObject().getDeviceType() != type) {
                         mDeDeviceType = type;
                         mNoteKey = NoteEntity.KEY_NOTEKEY_TMP + "_" + mDeDeviceType.name();
                     }
                 }else {
-                    whiteBoardView.setIsTouchWrite(true);
+//                    whiteBoardView.setIsTouchWrite(true);
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }else {
-            whiteBoardView.setIsTouchWrite(true);
+//            whiteBoardView.setIsTouchWrite(true);
         }
         //都需要刷新白板
         whiteBoardView.initDrawArea();

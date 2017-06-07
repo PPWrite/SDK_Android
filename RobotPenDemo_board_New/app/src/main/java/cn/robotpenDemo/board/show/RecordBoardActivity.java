@@ -265,7 +265,10 @@ public class RecordBoardActivity extends RobotPenActivity
                 //支持多个图片的插入 所以插入图片成功后需要改变序号
                 break;
             case R.id.removePhotoBut:
-                recordBoardView.delCurrEditPhoto();//删除当前编辑图片
+                Log.e("test","recordBoardView.IsTouchWrite 1："+recordBoardView.isTouchWrite());
+                recordBoardView.setIsTouchWrite(true);
+                Log.e("test","recordBoardView.IsTouchWrite 2："+recordBoardView.isTouchWrite());
+//                recordBoardView.delCurrEditPhoto();//删除当前编辑图片
                 break;
             case R.id.innerbgBut:
                 Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

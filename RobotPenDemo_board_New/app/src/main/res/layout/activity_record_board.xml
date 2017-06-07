@@ -89,13 +89,12 @@
             android:layout_marginTop="4dp"
             android:text="退出编辑" />
         <Button
-            android:visibility="gone"
             android:id="@+id/removePhotoBut"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:clickable="false"
-            android:text="删图" />
+            android:text="手笔切换" />
         <Button
             android:id="@+id/innerbgBut"
             android:layout_width="80dp"
