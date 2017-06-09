@@ -12,11 +12,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codingmaster.slib.S;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.model.symbol.DeviceType;
@@ -108,6 +112,36 @@ public class MainActivity extends RobotPenActivity {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @OnClick(R.id.getBattery)
+    void OnClick(View view){
+        switch (view.getId()){
+            case R.id.getBattery:
+                try {
+                    initBatteryView(getPenServiceBinder().getRemainBattery());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+    private void initBatteryView(int batteryLevel){
+        DecimalFormat    df   = new DecimalFormat("0.00");
+        switch (batteryLevel){
+            case 254:
+                Toast.makeText(MainActivity.this,"充电中",Toast.LENGTH_SHORT).show();
+                break;
+            case 255:
+                Toast.makeText(MainActivity.this,"电池已充满",Toast.LENGTH_SHORT).show();
+                break;
+            case 0:
+                Toast.makeText(MainActivity.this,"电量获取失败，请检查连接设备",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(MainActivity.this,"电量："+df.format(batteryLevel/7.00*100)+"%",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

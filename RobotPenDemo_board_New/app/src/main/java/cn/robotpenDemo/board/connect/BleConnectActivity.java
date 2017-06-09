@@ -98,6 +98,7 @@ public class BleConnectActivity extends RobotPenActivity {
      * 固件升级URL
      */
     public static final String FIREWARE_FILE_HOST = "http://dl.robotpen.cn/fw/";
+    public static final String FIREWARE_FILE_HOST_TEST ="https://upgrade.robotpen.cn/";
     public static final int SUCCESS = 0;
     public static final int ERRORCODE = 1;
     public static final int FAILURE = 2;
@@ -125,10 +126,14 @@ public class BleConnectActivity extends RobotPenActivity {
                 DeviceEntity device = mPenAdapter.getItem(index);
                 String addr = device.getAddress();
                 try {
-                    if (getPenServiceBinder().getConnectedDevice() == null) {
-                        getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
-                    } else {
-                        Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
+                    if(getPenServiceBinder() != null) {
+                        if (getPenServiceBinder().getConnectedDevice() == null) {
+                            getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
+                        } else {
+                            Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(BleConnectActivity.this, "服务未启动", Toast.LENGTH_SHORT).show();
                     }
                 } catch (RemoteException e) {
                     Toast.makeText(BleConnectActivity.this, "连接失败，请再次点击", Toast.LENGTH_SHORT).show();
@@ -161,6 +166,8 @@ public class BleConnectActivity extends RobotPenActivity {
                 }
                 scanBut.setVisibility(View.VISIBLE);
                 disconnectBut.setVisibility(View.GONE);
+                deviceSync.setVisibility(View.GONE);
+                deviceUpdate.setVisibility(View.GONE);
                 statusText.setText("未连接设备!");
                 break;
             case R.id.deviceSync:
@@ -368,7 +375,7 @@ public class BleConnectActivity extends RobotPenActivity {
 
     @Override
     public void onOffLineNoteSyncFinished(String json, byte[] data) {
-        /*if (data != null && data.length >= 5) {
+        if (data != null && data.length >= 5) {
             int num = 0, step = 1;
             List<DevicePoint> points = new ArrayList<>();
             DeviceType type = DeviceType.toDeviceType(mRobotDevice.getDeviceVersion());
@@ -393,7 +400,7 @@ public class BleConnectActivity extends RobotPenActivity {
                 }
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     /**--------------
@@ -407,9 +414,12 @@ public class BleConnectActivity extends RobotPenActivity {
             switch (msg.what) {
                 case SUCCESS:
                     if (mRobotDevice != null) {
-                        String device_firmwareVer = mRobotDevice.getFirmwareVerStr();
+                        String device_mcuwareVer = mRobotDevice.getMcuFirmwareVerStr();
+                        String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
+                        String oldVersion= device_blewarever+";"+device_mcuwareVer;
                         String newVersion = msg.obj.toString();
-                        if (device_firmwareVer.compareTo(newVersion) < 0) { //存在新版
+//                        if (device_firmwareVer.compareTo(newVersion) < 0) { //存在新版
+                        if(!oldVersion.equals(newVersion)){
                            if(newVersion.contains(";")) {
                                String[] tmp = newVersion.split(";");
                                if(tmp.length>=2) {

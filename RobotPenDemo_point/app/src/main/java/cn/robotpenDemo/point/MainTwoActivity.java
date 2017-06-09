@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import com.codingmaster.slib.S;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
@@ -48,7 +51,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     Button gotoBle;
     @BindView(R.id.activity_usb)
     LinearLayout activityUsb;
-    public RobotPenAdapter<BaseTwoActivity, String> adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +120,33 @@ public class MainTwoActivity extends BaseTwoActivity {
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
         penWindows.setText(point.getWindowX(0) + "/" + point.getWindowY(0));
+    }
+
+    @OnClick(R.id.getBattery)
+    void OnClick(View view){
+        switch (view.getId()){
+            case R.id.getBattery:
+                initBatteryView(adapter.getRemainBattery());
+                break;
+        }
+    }
+
+    private void initBatteryView(int batteryLevel){
+        DecimalFormat df = new DecimalFormat("0.00");
+        switch (batteryLevel){
+            case 254:
+                Toast.makeText(MainTwoActivity.this,"充电中",Toast.LENGTH_SHORT).show();
+                break;
+            case 255:
+                Toast.makeText(MainTwoActivity.this,"电池已充满",Toast.LENGTH_SHORT).show();
+                break;
+            case 0:
+                Toast.makeText(MainTwoActivity.this,"电量获取失败，请检查连接设备",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(MainTwoActivity.this,"电量："+df.format(batteryLevel/7.00*100)+"%",Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override

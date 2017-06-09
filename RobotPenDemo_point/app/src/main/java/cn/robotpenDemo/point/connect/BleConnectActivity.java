@@ -178,7 +178,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case R.id.deviceUpdate:
                 showProgress("升级中");
-                updateDevice(mRobotDevice);
+                updateDeviceNew(mRobotDevice);
                 break;
         }
     }
@@ -388,16 +388,29 @@ public class BleConnectActivity extends RobotPenActivity{
     /**
      * 固件升级的相关回调
      */
+    private String newBleFirmwareVersion;
+    private String newMcuFirmwareVersion;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
                     if (mRobotDevice != null) {
-                        String device_firmwareVer = mRobotDevice.getFirmwareVerStr();
+                        String device_mcuwareVer = mRobotDevice.getMcuFirmwareVerStr();
+                        String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
+                        String oldVersion= device_blewarever+";"+device_mcuwareVer;
                         String newVersion = msg.obj.toString();
-                        if (device_firmwareVer.compareTo(newVersion)< 0) { //存在新版
-                            deviceUpdate.setVisibility(View.VISIBLE);
-                            mNewVersion = newVersion;
+//                        if (device_firmwareVer.compareTo(newVersion) < 0) { //存在新版
+                        if(!oldVersion.equals(newVersion)){
+                            if(newVersion.contains(";")) {
+                                String[] tmp = newVersion.split(";");
+                                if(tmp.length>=2) {
+                                    newBleFirmwareVersion = tmp[0];
+                                    newMcuFirmwareVersion = tmp[1];
+                                }else {
+                                    newBleFirmwareVersion = tmp[0];
+                                }
+                                deviceUpdate.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
                             deviceUpdate.setVisibility(View.GONE);
@@ -470,6 +483,75 @@ public class BleConnectActivity extends RobotPenActivity{
             }
         }.start();
     }
+
+    private void updateDeviceNew(RobotDevice device){
+        String bleUrl = generatorBleFirmwareUrl(device);
+        String mcuUrl = generatorMcuFirmwareUrl(device);
+        if(!TextUtils.isEmpty(bleUrl)&&!TextUtils.isEmpty(mcuUrl)){
+            downloadFirmwareData(bleUrl, mcuUrl);
+        }
+    }
+
+    private String generatorBleFirmwareUrl(RobotDevice device) {
+        if (!TextUtils.isEmpty(newBleFirmwareVersion))
+            return FIREWARE_FILE_HOST
+                    + DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent() + "BLE_" + newBleFirmwareVersion + ".bin";
+        return null;
+    }
+
+    /**
+     * 生成mcu固件升级url
+     * 例如：NEBULA_MCU_0.11.bin
+     *
+     * @param device
+     * @return
+     */
+    private String generatorMcuFirmwareUrl(RobotDevice device) {
+        if (!TextUtils.isEmpty(newMcuFirmwareVersion))
+            return FIREWARE_FILE_HOST
+                    + DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent() + "MCU_" + newMcuFirmwareVersion + ".bin";
+        return null;
+    }
+
+    public void downloadFirmwareData(String... urls) {
+        UpdateFirmwareDownloadTask firmDownloadTask = new UpdateFirmwareDownloadTask() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(List<byte[]> bytes) {
+                super.onPostExecute(bytes);
+                onDownFirmwareFileFinished(bytes);
+
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+
+            }
+        };
+        firmDownloadTask.execute(urls);
+    }
+
+    public void onDownFirmwareFileFinished(List<byte[]> data) {
+        try {
+            if (data.size() == 2) {
+                getPenServiceBinder().startUpgradeDevice(
+                        newBleFirmwareVersion,
+                        data.get(0),
+                        newMcuFirmwareVersion,
+                        data.get(1));
+            } else {
+                getPenServiceBinder().startUpdateFirmware(newBleFirmwareVersion, data.get(0));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 升级固件版本
