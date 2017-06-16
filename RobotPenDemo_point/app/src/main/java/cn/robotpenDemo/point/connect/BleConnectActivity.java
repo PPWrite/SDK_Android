@@ -128,12 +128,16 @@ public class BleConnectActivity extends RobotPenActivity{
                 DeviceEntity device = mPenAdapter.getItem(index);
                 String addr = device.getAddress();
                 try {
-                    if (getPenServiceBinder().getConnectedDevice() == null) {
-                        getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
-                    } else {
-                        Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
+                    if (getPenServiceBinder() != null) {
+                        if (getPenServiceBinder().getConnectedDevice() == null) {
+                            getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
+                        } else {
+                            Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(BleConnectActivity.this, "服务未启动", Toast.LENGTH_SHORT).show();
                     }
-                } catch (RemoteException e) {
+                } catch(RemoteException e){
                     e.printStackTrace();
                 }
             }
@@ -200,6 +204,36 @@ public class BleConnectActivity extends RobotPenActivity{
 
     }
 
+    @Override
+    public void onSupportPenPressureCheck(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckPressureing() {
+
+    }
+
+    @Override
+    public void onCheckPressurePen() {
+
+    }
+
+    @Override
+    public void onCheckPressureFinish(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdate() {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdateFinish(byte[] data) {
+
+    }
+
     /**--------------
      * 设备连接部分
      -----------------*/
@@ -245,24 +279,28 @@ public class BleConnectActivity extends RobotPenActivity{
      **/
     private void checkDevice() {
         try {
-            RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice(); //获取目前连接的设备
-            if (robotDevice != null) {//已连接设备
-                statusText.setText("已连接设备: " + robotDevice.getName());
-                if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //已连接设备
-                    Toast.makeText(this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();
-                    scanBut.setVisibility(View.GONE);
+            if(getPenServiceBinder()!=null) {
+                RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice(); //获取目前连接的设备
+                if (robotDevice != null) {//已连接设备
+                    statusText.setText("已连接设备: " + robotDevice.getName());
+                    if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //已连接设备
+                        Toast.makeText(this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();
+                        scanBut.setVisibility(View.GONE);
+                    } else {
+                        disconnectBut.setVisibility(View.VISIBLE);
+                        scanBut.setVisibility(View.GONE);
+                    }
                 } else {
-                    disconnectBut.setVisibility(View.VISIBLE);
-                    scanBut.setVisibility(View.GONE);
-                }
-            } else {
-                //获取上次连接设备
+                    //获取上次连接设备
 //                if (!pairedSp.getString(SP_PAIRED_KEY, "").isEmpty()) {
 //                    //已经连接过蓝牙设备 从pairedSp中获取
 //                    String laseDeviceAddress = pairedSp.getString(SP_PAIRED_KEY, "");
 //                    getPenServiceBinder().connectDevice(laseDeviceAddress);
 //                    showProgress("正在检测上次连接的设备");
 //                }
+                }
+            }else {
+                Toast.makeText(BleConnectActivity.this, "服务未启动", Toast.LENGTH_SHORT).show();
             }
         } catch (RemoteException e) {
             e.printStackTrace();

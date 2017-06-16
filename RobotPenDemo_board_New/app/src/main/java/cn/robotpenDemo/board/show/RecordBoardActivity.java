@@ -103,7 +103,7 @@ public class RecordBoardActivity extends RobotPenActivity
         mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
-        recordBoardView.setIsTouchSmooth(false);
+        recordBoardView.setIsTouchSmooth(true);
 //        recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
     }
 
@@ -265,9 +265,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 //支持多个图片的插入 所以插入图片成功后需要改变序号
                 break;
             case R.id.removePhotoBut:
-                Log.e("test","recordBoardView.IsTouchWrite 1："+recordBoardView.isTouchWrite());
-                recordBoardView.setIsTouchWrite(true);
-                Log.e("test","recordBoardView.IsTouchWrite 2："+recordBoardView.isTouchWrite());
+                recordBoardView.setIsTouchWrite(!recordBoardView.isTouchWrite());
 //                recordBoardView.delCurrEditPhoto();//删除当前编辑图片
                 break;
             case R.id.innerbgBut:
@@ -340,7 +338,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 }
                 break;
             case R.id.isRubber:
-                isRubber=30;
+                isRubber=50;
                 break;
             case R.id.exit_edit:
                 recordBoardView.startPhotoEdit(false);
@@ -515,9 +513,9 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     @Override
-    public boolean onRecordTimeChange(Date date) {// 返回true 代表已处理，将不再显示记时布局
+    public boolean onRecordTimeChange(Date date) {
 
-        return false;
+        return true;
     }
 
     @Override
@@ -562,6 +560,36 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public void onPageInfo(int i, int i1) {
+
+    }
+
+    @Override
+    public void onSupportPenPressureCheck(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckPressureing() {
+
+    }
+
+    @Override
+    public void onCheckPressurePen() {
+
+    }
+
+    @Override
+    public void onCheckPressureFinish(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdate() {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdateFinish(byte[] data) {
 
     }
 

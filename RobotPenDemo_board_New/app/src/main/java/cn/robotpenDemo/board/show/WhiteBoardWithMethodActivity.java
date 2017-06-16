@@ -446,4 +446,34 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     public void onPageInfo(int i, int i1) {
 
     }
+
+    @Override
+    public void onSupportPenPressureCheck(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckPressureing() {
+
+    }
+
+    @Override
+    public void onCheckPressurePen() {
+
+    }
+
+    @Override
+    public void onCheckPressureFinish(boolean flag) {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdate() {
+
+    }
+
+    @Override
+    public void onCheckModuleUpdateFinish(byte[] data) {
+
+    }
 }
