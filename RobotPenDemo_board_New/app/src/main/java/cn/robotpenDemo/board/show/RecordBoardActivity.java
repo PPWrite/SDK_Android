@@ -438,8 +438,17 @@ public class RecordBoardActivity extends RobotPenActivity
     @Override
     public boolean onEvent(WhiteBoardView.BoardEvent boardEvent, Object o) {
         switch (boardEvent) {
+            case TRAILS_COMPLETE:
+                Log.e("test","TRAILS_COMPLETE");
+                try {
+                    getPenServiceBinder().setPageInfo(recordBoardView.getBlockIndex() + 1, recordBoardView.getBlockCount());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
             case BOARD_AREA_COMPLETE: //白板区域加载完成
                 recordBoardView.beginBlock();
+
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
 //                checkDeviceConn();
@@ -554,13 +563,12 @@ public class RecordBoardActivity extends RobotPenActivity
 //            recordBoardView.setPointerIcon();
 //            DeviceType type = DeviceType.toDeviceType(deviceType);
 //            recordBoardView.drawDevicePoint(type,x,y,presure,state);
-//            recordBoardView.drawLine();
         }
     }
 
     @Override
     public void onPageInfo(int i, int i1) {
-
+        Log.e("test","i:"+i+" i1:"+i1);
     }
 
     @Override
@@ -593,9 +601,15 @@ public class RecordBoardActivity extends RobotPenActivity
 
     }
 
+    @Override
+    public void onRobotKeyEvent(int e) {
+        super.onRobotKeyEvent(e);
+        Log.e("test","e:"+e);
+        recordBoardView.insertBlock();
 
+    }
 
-   /* @Override
+    /* @Override
     public void onBackPressed() {
         super.onBackPressed();
         Log.e("xxxx","Xxxxxxxxxxxxx");

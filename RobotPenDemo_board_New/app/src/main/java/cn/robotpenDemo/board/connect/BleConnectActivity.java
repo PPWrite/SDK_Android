@@ -740,7 +740,6 @@ public class BleConnectActivity extends RobotPenActivity {
                 Toast.makeText(BleConnectActivity.this, "笔记同步成功", Toast.LENGTH_SHORT).show();
                 break;
         }
-
     }
 
     @Override

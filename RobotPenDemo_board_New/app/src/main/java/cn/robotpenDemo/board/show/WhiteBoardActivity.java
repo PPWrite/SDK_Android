@@ -283,4 +283,6 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onCheckModuleUpdateFinish(byte[] data) {
 
     }
+
+
 }
