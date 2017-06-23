@@ -102,7 +102,7 @@
             android:layout_marginTop="2dp"
             android:clickable="false"
             android:text="换背景"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
         <Button
             android:id="@+id/bgScaleTypeBut"
             android:layout_width="80dp"

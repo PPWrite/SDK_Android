@@ -99,7 +99,7 @@ public class RecordBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         recordBoardView.setIsTouchWrite(true);
         recordBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
-        recordBoardView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//        recordBoardView.setBoardBackgroundColor(Color.parseColor("#FFFFFF"));
         mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
@@ -250,6 +250,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case R.id.cleanLineBut:
                 recordBoardView.cleanTrail();
+                recordBoardView.saveSnapshot();
                 break;
             case R.id.cleanPhotoBut:
                 recordBoardView.cleanPhoto();// 清图片
