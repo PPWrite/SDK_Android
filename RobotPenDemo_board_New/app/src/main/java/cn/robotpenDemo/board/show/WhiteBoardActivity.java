@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -25,6 +30,8 @@ import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
+import cn.robotpen.utils.FileUtils;
+import cn.robotpen.utils.log.CLog;
 import cn.robotpen.views.widget.WhiteBoardView;
 import cn.robotpenDemo.board.MyApplication;
 import cn.robotpenDemo.board.R;
@@ -45,6 +52,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     String mNoteKey = NoteEntity.KEY_NOTEKEY_TMP;
     ProgressDialog mProgressDialog;
     Handler mHandler;
+    private Canvas canvas = new Canvas();
     private WeakReference<Activity> weakReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,11 +129,12 @@ public class WhiteBoardActivity extends RobotPenActivity
     @OnClick(R.id.clearnScreen)
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.clearnScreen:
+            case R.id.clearnScreen://                imageViewtmp.setImageBitmap(getBitmap(whiteBoardView.getDrawAreaView()));
                 whiteBoardView.cleanScreen();
                 break;
         }
     }
+
 
     public boolean isScreenLanscape() {
         Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
@@ -183,6 +192,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         return "123";
     }
 
+    Bitmap bitmap;
     @Override
     public boolean onEvent(WhiteBoardView.BoardEvent boardEvent, Object o) {
         switch (boardEvent) {
@@ -190,7 +200,6 @@ public class WhiteBoardActivity extends RobotPenActivity
                 whiteBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-//                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
@@ -217,12 +226,10 @@ public class WhiteBoardActivity extends RobotPenActivity
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
                 //whiteBoardView.initDrawArea();
                 whiteBoardView.setIsTouchWrite(false);// 设备连接成功，改为用笔输入
-                Log.e("test","STATE_DEVICE_INFO");
                 checkDeviceConn();
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开
                 whiteBoardView.setIsTouchWrite(true);// 设备断开，允许用手输入
-                Log.e("test","STATE_DISCONNECTED");
                 break;
         }
     }
@@ -235,19 +242,18 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
-        //state 0x00 离开  0x10 悬空  0x01
+        // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-//        CLog.w(String.format("the deviceType:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
+//        CLog.w(String.format("the xc:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
         //TEST 测试数据
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
-//            if(whiteBoardView!=null) {
-//                DeviceType type = DeviceType.toDeviceType(deviceType);
-//                whiteBoardView.drawDevicePoint(type, x, y, presure, state);
-//            }
+//            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
+            DeviceType type = DeviceType.toDeviceType(deviceType);
+            whiteBoardView.drawDevicePoint(type,x,y,presure,state);
         }
     }
+
 
     @Override
     public void onPageInfo(int i, int i1) {
@@ -270,7 +276,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
 
     @Override
-    public void onCheckPressureFinish(boolean flag) {
+    public void onCheckPressureFinish(int flag) {
 
     }
 
@@ -284,5 +290,15 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     }
 
-
+    Bitmap bmp;
+    public Bitmap getBitmap( View view){
+        if(bmp!=null){
+            bmp.recycle();
+            bmp=null;
+        }
+        bmp= Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_4444);
+        Canvas canvas = new Canvas(bmp);
+        view.draw(canvas);
+        return bmp;
+    }
 }

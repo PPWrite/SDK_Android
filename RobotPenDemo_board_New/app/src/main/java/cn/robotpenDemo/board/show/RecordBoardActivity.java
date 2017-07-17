@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.io.File;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -81,6 +82,7 @@ public class RecordBoardActivity extends RobotPenActivity
     Button recordStopBut;
     @BindView(R.id.recordCancelBut)
     Button recordCancelBut;
+
     @BindView(R.id.delPageBut)
     Button delPageBut;
     @BindView(R.id.gotoProBut)
@@ -105,6 +107,7 @@ public class RecordBoardActivity extends RobotPenActivity
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
         recordBoardView.setIsTouchSmooth(true);
 //        recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
+//        recordBoardView.setShowRecordDialog(true);// 录制笔记结束后是否弹出对话框 默认开启
     }
 
     @Override
@@ -530,7 +533,7 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public void getRecordVideoName(String s) {
-
+        Log.e("test","getRecordVideoName :"+s);
     }
 
 
@@ -559,11 +562,10 @@ public class RecordBoardActivity extends RobotPenActivity
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察，止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
-            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-            recordBoardView.drawLine(p);
-//            recordBoardView.setPointerIcon();
-//            DeviceType type = DeviceType.toDeviceType(deviceType);
-//            recordBoardView.drawDevicePoint(type,x,y,presure,state);
+//            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
+//            recordBoardView.drawLine(p);
+            DeviceType type = DeviceType.toDeviceType(deviceType);
+            recordBoardView.drawDevicePoint(type,x,y,presure,state);
         }
     }
 
@@ -588,7 +590,7 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     @Override
-    public void onCheckPressureFinish(boolean flag) {
+    public void onCheckPressureFinish(int flag) {
 
     }
 
