@@ -40,6 +40,7 @@ public abstract class BaseConnectPenServiceActivity<T extends IRemoteRobotServic
         }
     };
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

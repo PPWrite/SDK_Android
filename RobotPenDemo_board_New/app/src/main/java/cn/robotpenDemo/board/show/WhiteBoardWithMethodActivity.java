@@ -478,4 +478,44 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
 
     }
 
+    @Override
+    public void onRobotKeyEvent(int e) {
+        super.onRobotKeyEvent(e);
+        switch (e) {
+            case 0x03:
+                onEventFrontPage();
+                break;
+            case 0x04:
+                onEventNextPage();
+                break;
+            case 0x05:
+                whiteBoardView.insertBlock();
+                break;
+        }
+
+    }
+
+
+    /**
+     * 用于响应设备按钮事件的翻页
+     */
+    private void onEventFrontPage() {
+        if (whiteBoardView.isFirstBlock()) {
+            whiteBoardView.lastBlock();
+        } else {
+            whiteBoardView.frontBlock();
+        }
+    }
+
+    /**
+     * 用于响应设备按钮事件的翻页
+     */
+    private void onEventNextPage() {
+        if (whiteBoardView.isLastBlock()) {
+            whiteBoardView.firstBlock();
+        } else {
+            whiteBoardView.nextBlock();
+        }
+    }
+
 }

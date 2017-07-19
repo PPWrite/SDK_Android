@@ -51,9 +51,10 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
                 }
 
                 @Override
-                public void onCheckPressureFinish(boolean flag) {
+                public void onCheckPressureFinish(int flag) {
 
                 }
+
 
                 @Override
                 public void onCheckModuleUpdate() {

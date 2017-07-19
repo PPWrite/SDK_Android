@@ -27,7 +27,7 @@ public class MyApplication extends Application {
         super.onCreate();
         instance = this;
 
-      /*  robotPenService = new RobotPenServiceImpl(this.getBaseContext());
+       /* robotPenService = new RobotPenServiceImpl(this.getBaseContext());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //权限处理
@@ -43,6 +43,8 @@ public class MyApplication extends Application {
     public RobotPenService getRobotPenService() {
         return this.robotPenService;
     }
+
+
     /*
      * 统一创建session
      * @return

@@ -607,9 +607,41 @@ public class RecordBoardActivity extends RobotPenActivity
     @Override
     public void onRobotKeyEvent(int e) {
         super.onRobotKeyEvent(e);
-        Log.e("test","e:"+e);
-        recordBoardView.insertBlock();
+        switch (e) {
+            case 0x03:
+                onEventFrontPage();
+                break;
+            case 0x04:
+                onEventNextPage();
+                break;
+            case 0x05:
+                recordBoardView.insertBlock();
+                break;
+        }
 
+    }
+
+
+    /**
+     * 用于响应设备按钮事件的翻页
+     */
+    private void onEventFrontPage() {
+            if (recordBoardView.isFirstBlock()) {
+                recordBoardView.lastBlock();
+            } else {
+                recordBoardView.frontBlock();
+            }
+    }
+
+    /**
+     * 用于响应设备按钮事件的翻页
+     */
+    private void onEventNextPage() {
+            if (recordBoardView.isLastBlock()) {
+                recordBoardView.firstBlock();
+            } else {
+                recordBoardView.nextBlock();
+            }
     }
 
     /* @Override

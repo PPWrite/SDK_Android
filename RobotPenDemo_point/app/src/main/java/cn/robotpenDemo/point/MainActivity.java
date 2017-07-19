@@ -154,7 +154,7 @@ public class MainActivity extends RobotPenActivity {
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        Log.e("test","x: "+x+"  y:"+y +" presure "+presure);
+        Log.e("test","x: "+x+"  y:"+y +" presure "+presure+" state:"+state);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
 
         connectDeviceType.setText(point.getDeviceType().name());
@@ -188,7 +188,7 @@ public class MainActivity extends RobotPenActivity {
     }
 
     @Override
-    public void onCheckPressureFinish(boolean flag) {
+    public void onCheckPressureFinish(int flag) {
 
     }
 

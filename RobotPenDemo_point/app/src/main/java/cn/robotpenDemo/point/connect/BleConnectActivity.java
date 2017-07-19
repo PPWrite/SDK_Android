@@ -220,7 +220,7 @@ public class BleConnectActivity extends RobotPenActivity{
     }
 
     @Override
-    public void onCheckPressureFinish(boolean flag) {
+    public void onCheckPressureFinish(int flag) {
 
     }
 
