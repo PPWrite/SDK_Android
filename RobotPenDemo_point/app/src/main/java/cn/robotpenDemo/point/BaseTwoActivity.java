@@ -20,16 +20,14 @@ import cn.robotpenDemo.point.connect.BytesHelper;
  * Created by wang on 2017/3/3.
  */
 
-public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectListener<String>,Handler.Callback {
+public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectListener<String> {
 
     public RobotPenAdapter<BaseTwoActivity, String> adapter;
-    private Handler mHandler ;
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new Handler(this);
         progressDialog=new ProgressDialog(BaseTwoActivity.this);
         progressDialog.setMessage("正在初始化");
         progressDialog.show();
@@ -80,12 +78,6 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         }
     }
 
-    //
-    @Override
-    public boolean handleMessage(Message msg) {
-        return false;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -94,8 +86,6 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
             progressDialog=null;
         }
         adapter.release();
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler = null;
     }
 
 

@@ -1,9 +1,11 @@
 package cn.robotpenDemo.point.connect;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -108,7 +110,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         ButterKnife.bind(this);
         mPenAdapter = new PenAdapter(BleConnectTwoActivity.this);
         //获取存储存储
-//        lastSp = this.getSharedPreferences(SP_LAST_PAIRED, MODE_PRIVATE);
+//      lastSp = this.getSharedPreferences(SP_LAST_PAIRED, MODE_PRIVATE);
         pairedSp = this.getSharedPreferences(SP_PAIRED_DEVICE, MODE_PRIVATE);
 
         listview.setAdapter(mPenAdapter);
@@ -120,6 +122,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 DeviceEntity device = mPenAdapter.getItem(index);
                 String addr = device.getAddress();
                 try {
+                    Log.e("test","开始连接："+addr);
                     adapter.connect(addr);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -155,7 +158,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         try {
             if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
                 isConnected=true;
-                mRobotDevice=adapter.getRobotServiceBinder().getConnectedDevice();
                 statusText.setText("已连接设备: " + adapter.getRobotServiceBinder().getConnectedDevice().getName());
                 disconnectBut.setVisibility(View.VISIBLE);
                 scanBut.setVisibility(View.GONE);
@@ -179,10 +181,37 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 }
                 break;
             case R.id.deviceSync:
-                if(isConnected)
-                    adapter.startSyncOffLineNote();
-                else
-                    Toast.makeText(this, "请先连接蓝牙", Toast.LENGTH_SHORT).show();
+//                    adapter.startSyncOffLineNote();
+                try {
+                    if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
+                        int num = adapter.getRobotServiceBinder().getConnectedDevice().getOfflineNoteNum();
+                        if (num > 0) {
+                            deviceSync.setVisibility(View.VISIBLE);
+                            AlertDialog.Builder alert = new AlertDialog.Builder(BleConnectTwoActivity.this);
+                            alert.setTitle("提示");
+                            alert.setMessage("共有" + num + "条数据可以同步！");
+                            alert.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try{
+                                        adapter.startSyncOffLineNote();
+                                    }catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.setNegativeButton("取消", null);
+                            alert.show();
+                        }else {
+                            Toast.makeText(this, "无离线笔记", Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(this, "请先连接蓝牙", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -217,18 +246,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what){
-            case 0x1000:
-                initSuccess();
-                break;
-            case 0x1001:
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onConnected(int i) {
         Log.e("test","onConnected");
         isConnected=true;
@@ -245,7 +262,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onConnectFailed(int i) {
         super.onConnectFailed(i);
-        Log.e("test","onConnectFailed");
+        Log.e("test","onConnectFailed: "+i);
     }
 
     @Override
