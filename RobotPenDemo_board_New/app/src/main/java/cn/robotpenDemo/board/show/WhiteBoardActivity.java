@@ -85,7 +85,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onDestroy() {
         super.onDestroy();
         if (whiteBoardView != null) {
-//          whiteBoardView.cleanScreen();  // 清屏
+          whiteBoardView.cleanScreen();  // 清屏
             whiteBoardView.dispose();
             whiteBoardView = null;
         }
@@ -169,7 +169,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public boolean getIsPressure() {
-        return false;
+        return true;
     }
 
     @Override

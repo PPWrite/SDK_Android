@@ -29,6 +29,9 @@ import android.widget.Toast;
 
 import com.codingmaster.slib.S;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,7 +99,7 @@ public class BleConnectActivity extends RobotPenActivity{
     /**
      * 固件升级URL
      */
-    public static final String FIREWARE_FILE_HOST = "http://dl.robotpen.cn/fw/";
+    public static final String FIREWARE_FILE_HOST ="https://upgrade.robotpen.cn/fw/check";
     public static final int SUCCESS = 0;
     public static final int ERRORCODE = 1;
     public static final int FAILURE = 2;
@@ -428,30 +431,49 @@ public class BleConnectActivity extends RobotPenActivity{
      */
     private String newBleFirmwareVersion;
     private String newMcuFirmwareVersion;
+    String newBleFirmwareUrl="";
+    String newMcuFirmwareUrl="";
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SUCCESS:
                     if (mRobotDevice != null) {
-                        String device_mcuwareVer = mRobotDevice.getMcuFirmwareVerStr();
-                        String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
-                        String oldVersion= device_blewarever+";"+device_mcuwareVer;
-                        String newVersion = msg.obj.toString();
-//                        if (device_firmwareVer.compareTo(newVersion) < 0) { //存在新版
-                        if(!oldVersion.equals(newVersion)){
-                            if(newVersion.contains(";")) {
-                                String[] tmp = newVersion.split(";");
-                                if(tmp.length>=2) {
-                                    newBleFirmwareVersion = tmp[0];
-                                    newMcuFirmwareVersion = tmp[1];
-                                }else {
-                                    newBleFirmwareVersion = tmp[0];
-                                }
+                        try {
+                            JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                            JSONObject jsonObject1 = jsonObject.getJSONObject("data");
+                            newBleFirmwareVersion = jsonObject1.getString("ble_version");
+                            newBleFirmwareVersion="0."+newBleFirmwareVersion;
+                            newMcuFirmwareVersion = jsonObject1.getString("mcu_version");
+                            newMcuFirmwareVersion="0."+newMcuFirmwareVersion;
+                            newBleFirmwareUrl = jsonObject1.getString("ble_url");
+                            newMcuFirmwareUrl = jsonObject1.getString("mcu_url");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(!newMcuFirmwareVersion.equals("0.0")) {
+                            String device_mcuwareVer = mRobotDevice.getMcuFirmwareVerStr();
+                            String[] tmp = device_mcuwareVer.split("\\.");
+                            device_mcuwareVer = "0." + tmp[tmp.length - 1];
+                            String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
+                            String[] tmp2 = device_blewarever.split("\\.");
+                            device_blewarever = "0." + tmp2[tmp2.length - 1];
+                            if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
+                            } else {
+//                                Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
+                                deviceUpdate.setVisibility(View.GONE);
                             }
-                        } else {
-                            Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
-                            deviceUpdate.setVisibility(View.GONE);
+                        }else {
+                            String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
+                            String[] tmp2 = device_blewarever.split("\\.");
+                            device_blewarever = "0." + tmp2[tmp2.length - 1];
+                            if (!newBleFirmwareVersion.equals(device_blewarever)) {
+                                deviceUpdate.setVisibility(View.VISIBLE);
+                            } else {
+//                                Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
+                                deviceUpdate.setVisibility(View.GONE);
+                            }
                         }
                     }
                     break;
@@ -489,12 +511,14 @@ public class BleConnectActivity extends RobotPenActivity{
      * 检查设备固件版本
      */
     private void checkDeviceVersion(RobotDevice device) {
-        final String otaFileName = device.getName() + "_svrupdate.txt";
+        final String otaFileName = DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent()+"svrupdate.txt";
+//        final String otaFileName = device.getName() + "_svrupdate.txt";
         new Thread() {
             public void run() {
                 int code;
                 try {
-                    URL url = new URL(FIREWARE_FILE_HOST + otaFileName);
+//                    URL url = new URL(FIREWARE_FILE_HOST_TEST + otaFileName);
+                    URL url = new URL(FIREWARE_FILE_HOST + "?"+"type="+mRobotDevice.getDeviceVersion());
                     HttpURLConnection conn = (HttpURLConnection) url
                             .openConnection();
                     conn.setRequestMethod("GET");//使用GET方法获取
@@ -523,9 +547,11 @@ public class BleConnectActivity extends RobotPenActivity{
     }
 
     private void updateDeviceNew(RobotDevice device){
-        String bleUrl = generatorBleFirmwareUrl(device);
-        String mcuUrl = generatorMcuFirmwareUrl(device);
-        if(!TextUtils.isEmpty(bleUrl)&&!TextUtils.isEmpty(mcuUrl)){
+//        String bleUrl = generatorBleFirmwareUrl(device);
+//        String mcuUrl = generatorMcuFirmwareUrl(device);
+        String bleUrl = newBleFirmwareUrl;
+        String mcuUrl = newMcuFirmwareUrl;
+        if(!TextUtils.isEmpty(bleUrl)){
             downloadFirmwareData(bleUrl, mcuUrl);
         }
     }
@@ -575,15 +601,15 @@ public class BleConnectActivity extends RobotPenActivity{
 
     public void onDownFirmwareFileFinished(List<byte[]> data) {
         try {
-            if (data.size() == 2) {
+//            if (data.size() == 2) {
                 getPenServiceBinder().startUpgradeDevice(
                         newBleFirmwareVersion,
                         data.get(0),
                         newMcuFirmwareVersion,
                         data.get(1));
-            } else {
-                getPenServiceBinder().startUpdateFirmware(newBleFirmwareVersion, data.get(0));
-            }
+//            } else {
+//                getPenServiceBinder().startUpdateFirmware(newBleFirmwareVersion, data.get(0));
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
