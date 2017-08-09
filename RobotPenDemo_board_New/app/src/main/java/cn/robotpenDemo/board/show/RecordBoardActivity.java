@@ -185,7 +185,7 @@ public class RecordBoardActivity extends RobotPenActivity
         //检查是否有需要插入的图片uri
         if (null != mInsertPhotoUri) {
             recordBoardView.insertPhoto(getRealFilePath(RecordBoardActivity.this,mInsertPhotoUri));
-//            recordBoardView.startPhotoEdit(true); //插入图片后，设置图片可以编辑状态
+            recordBoardView.startPhotoEdit(true); //插入图片后，设置图片可以编辑状态
             mInsertPhotoUri = null;
         }
         if (null != mBgUri) {
@@ -200,7 +200,7 @@ public class RecordBoardActivity extends RobotPenActivity
             , R.id.saveScreenBut, R.id.cleanPhotoBut
             , R.id.innerbgBut, R.id.removeBgBut,R.id.bgScaleTypeBut
             , R.id.delPageBut, R.id.gotoProBut, R.id.gotoNextBut
-            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut,R.id.isRubber,R.id.exit_edit})
+            , R.id.recordBut, R.id.recordStopBut,R.id.recordCancelBut,R.id.photoScaleTypeBut,R.id.isRubber,R.id.exit_edit,R.id.start_edit})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.changePenBut: //更改笔粗细
@@ -346,6 +346,9 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case R.id.exit_edit:
                 recordBoardView.startPhotoEdit(false);
+                break;
+            case R.id.start_edit:
+                recordBoardView.startPhotoEdit(true);
                 break;
         }
     }
@@ -527,7 +530,7 @@ public class RecordBoardActivity extends RobotPenActivity
 
     @Override
     public boolean onRecordTimeChange(Date date) {
-
+    // 显示时间
         return true;
     }
 
@@ -575,6 +578,11 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     @Override
+    public void onPageNumberAndCategory(int pageNumber, int category) {
+
+    }
+
+    @Override
     public void onSupportPenPressureCheck(boolean flag) {
 
     }
@@ -615,7 +623,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 onEventNextPage();
                 break;
             case 0x05:
-                recordBoardView.insertBlock();
+//                recordBoardView .insertBlock();
                 break;
         }
 

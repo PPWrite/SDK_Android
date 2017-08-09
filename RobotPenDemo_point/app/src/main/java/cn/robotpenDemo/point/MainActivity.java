@@ -25,6 +25,8 @@ import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
+import cn.robotpen.pen.model.AllBatteryType;
+import cn.robotpen.pen.model.Battery;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpenDemo.point.connect.BleConnectActivity;
@@ -120,29 +122,18 @@ public class MainActivity extends RobotPenActivity {
         switch (view.getId()){
             case R.id.getBattery:
                 try {
-                    initBatteryView(getPenServiceBinder().getRemainBattery());
+                    if(getPenServiceBinder()!=null&&getPenServiceBinder().getConnectedDevice()!=null)
+                        initBatteryView(getPenServiceBinder().getRemainBatteryEM().getALLBatteryType());
+                    else
+                        Toast.makeText(MainActivity.this,"请先连接书写板",Toast.LENGTH_SHORT).show();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 break;
         }
     }
-    private void initBatteryView(int batteryLevel){
-        DecimalFormat    df   = new DecimalFormat("0.00");
-        switch (batteryLevel){
-            case 254:
-                Toast.makeText(MainActivity.this,"充电中",Toast.LENGTH_SHORT).show();
-                break;
-            case 255:
-                Toast.makeText(MainActivity.this,"电池已充满",Toast.LENGTH_SHORT).show();
-                break;
-            case 0:
-                Toast.makeText(MainActivity.this,"电量获取失败，请检查连接设备",Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(MainActivity.this,"电量："+df.format(batteryLevel/7.00*100)+"%",Toast.LENGTH_SHORT).show();
-                break;
-        }
+    private void initBatteryView(AllBatteryType batteryLevel){
+        Toast.makeText(MainActivity.this,"当前电量："+batteryLevel,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -169,6 +160,11 @@ public class MainActivity extends RobotPenActivity {
 
     @Override
     public void onPageInfo(int i, int i1) {
+
+    }
+
+    @Override
+    public void onPageNumberAndCategory(int pageNumber, int category) {
 
     }
 

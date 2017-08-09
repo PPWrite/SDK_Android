@@ -793,6 +793,11 @@ public class BleConnectActivity extends RobotPenActivity {
     }
 
     @Override
+    public void onPageNumberAndCategory(int pageNumber, int category) {
+
+    }
+
+    @Override
     public void onSupportPenPressureCheck(boolean flag) {
 
     }

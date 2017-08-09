@@ -244,7 +244,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-//        CLog.w(String.format("the xc:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
+        CLog.w(String.format("the xc:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
         //TEST 测试数据
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
@@ -257,6 +257,11 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public void onPageInfo(int i, int i1) {
+
+    }
+
+    @Override
+    public void onPageNumberAndCategory(int pageNumber, int category) {
 
     }
 

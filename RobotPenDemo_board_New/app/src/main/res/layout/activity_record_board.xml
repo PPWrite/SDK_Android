@@ -83,6 +83,12 @@
             android:clickable="false"
             android:text="图平铺" />
         <Button
+            android:id="@+id/start_edit"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="编辑图片" />
+        <Button
             android:id="@+id/exit_edit"
             android:layout_width="80dp"
             android:layout_height="wrap_content"

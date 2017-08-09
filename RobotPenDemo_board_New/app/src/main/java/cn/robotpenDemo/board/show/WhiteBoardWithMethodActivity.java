@@ -448,6 +448,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     }
 
     @Override
+    public void onPageNumberAndCategory(int pageNumber, int category) {
+
+    }
+
+    @Override
     public void onSupportPenPressureCheck(boolean flag) {
 
     }
@@ -489,7 +494,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 onEventNextPage();
                 break;
             case 0x05:
-                whiteBoardView.insertBlock();
+//                whiteBoardView.insertBlock();
                 break;
         }
 

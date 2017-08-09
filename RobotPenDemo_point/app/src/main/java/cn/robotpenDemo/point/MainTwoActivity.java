@@ -23,6 +23,8 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
+import cn.robotpen.pen.model.AllBatteryType;
+import cn.robotpen.pen.model.Battery;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
 
 /**
@@ -97,6 +99,7 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onConnectFailed(int reasonCode) {
         super.onConnectFailed(reasonCode);
+        deviceType=0;
         S.i(reasonCode);
     }
 
@@ -126,31 +129,21 @@ public class MainTwoActivity extends BaseTwoActivity {
     void OnClick(View view){
         switch (view.getId()){
             case R.id.getBattery:
-                initBatteryView(adapter.getRemainBattery());
+                if(adapter!=null&&deviceType!=0)
+                    initBatteryView(adapter.getRemainBatteryEM().getALLBatteryType());
+                else
+                    Toast.makeText(MainTwoActivity.this,"请先连接书写板",Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
-    private void initBatteryView(int batteryLevel){
-        DecimalFormat df = new DecimalFormat("0.00");
-        switch (batteryLevel){
-            case 254:
-                Toast.makeText(MainTwoActivity.this,"充电中",Toast.LENGTH_SHORT).show();
-                break;
-            case 255:
-                Toast.makeText(MainTwoActivity.this,"电池已充满",Toast.LENGTH_SHORT).show();
-                break;
-            case 0:
-                Toast.makeText(MainTwoActivity.this,"电量获取失败，请检查连接设备",Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(MainTwoActivity.this,"电量："+df.format(batteryLevel/7.00*100)+"%",Toast.LENGTH_SHORT).show();
-                break;
-        }
+    private void initBatteryView(AllBatteryType batteryLevel){
+        Toast.makeText(MainTwoActivity.this,""+batteryLevel,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDisconnected() {
+        deviceType=0;
         S.i("");
     }
 

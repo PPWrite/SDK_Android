@@ -34,6 +34,11 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         try {
             adapter = new RobotPenAdapter<BaseTwoActivity, String>(this, this) {
                 @Override
+                public void onPageNumberAndCategory(int pageNumber, int category) {
+
+                }
+
+                @Override
                 public void onSupportPenPressureCheck(boolean flag) {
 
                 }
