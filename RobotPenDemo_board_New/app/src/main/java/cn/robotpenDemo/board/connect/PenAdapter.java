@@ -17,8 +17,6 @@ import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpenDemo.board.R;
 
 public class PenAdapter extends BaseAdapter {
-	final int CHECK_DELAY = 5000;
-	private Context mContext;
 	private LayoutInflater inflater;
 	private ArrayList<DeviceEntity> mPenDevices;
 
@@ -27,7 +25,6 @@ public class PenAdapter extends BaseAdapter {
 	Handler checkHandler;
 
 	public PenAdapter(Context context) {
-		this.mContext = context;
 		inflater = LayoutInflater.from(context);
 		mPenDevices = new ArrayList<DeviceEntity>();
 		checkHandler = new Handler();
@@ -49,25 +46,6 @@ public class PenAdapter extends BaseAdapter {
 	}
 	
 	public void addItem(DeviceEntity item){
-		/*String macAddr = item.getAddress();
-		CheckRunnable checkRunnable = checkMap.get(macAddr);
-		if (checkRunnable != null) {
-			checkHandler.removeCallbacks(checkRunnable);
-			for (int i = 0; i < mPenDevices.size(); i++) {
-				DeviceEntity device = mPenDevices.get(i);
-				if (TextUtils.equals(device.getAddress(), item.getAddress())) {
-					break;
-				}
-			}
-		} else {
-			mPenDevices.add(item);
-			dataCache.put(item.getAddress(), item);
-			checkRunnable = new CheckRunnable(macAddr);
-			checkMap.put(macAddr, checkRunnable);
-		}
-		checkHandler.postDelayed(checkRunnable, CHECK_DELAY);*/
-
-
 		for (int i=0;i<mPenDevices.size();i++) {
 			if (mPenDevices.get(i).getAddress().equals(item.getAddress()))
 				return;

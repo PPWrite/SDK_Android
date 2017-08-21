@@ -52,7 +52,6 @@ public class UpdateFirmwareDownloadTask extends AsyncTask<String, Integer, List<
             outputStream.close();
             in.close();
             byte[] result = outputStream.toByteArray();
-//            outputStream.close();
             return result;
         } catch (Exception e) {
             e.printStackTrace();

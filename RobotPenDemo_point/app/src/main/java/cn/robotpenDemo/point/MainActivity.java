@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,8 +15,6 @@ import android.widget.Toast;
 
 import com.codingmaster.slib.S;
 
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,7 +23,6 @@ import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.AllBatteryType;
-import cn.robotpen.pen.model.Battery;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpenDemo.point.connect.BleConnectActivity;
@@ -60,7 +56,6 @@ public class MainActivity extends RobotPenActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        checkSDPermission();
         ButterKnife.bind(this);
         S.init(true,1,"PP_WRITER");
         //屏幕常亮控制
@@ -73,7 +68,6 @@ public class MainActivity extends RobotPenActivity {
                 startActivity(new Intent(MainActivity.this, BleConnectActivity.class));
             }
         });
-        //getRobotPenService().startRobotPenService(this,false);
     }
 
 
@@ -83,7 +77,6 @@ public class MainActivity extends RobotPenActivity {
             case RemoteState.STATE_CONNECTED:
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
-                //whiteBoardView.initDrawArea();
                 checkDeviceConn();
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开
@@ -99,7 +92,6 @@ public class MainActivity extends RobotPenActivity {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
-        getRobotPenService().startRobotPenService(this,false);
         checkDeviceConn();
     }
 
@@ -145,7 +137,6 @@ public class MainActivity extends RobotPenActivity {
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        Log.e("test","x: "+x+"  y:"+y +" presure "+presure+" state:"+state);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
 
         connectDeviceType.setText(point.getDeviceType().name());
@@ -182,6 +173,7 @@ public class MainActivity extends RobotPenActivity {
     public void onCheckPressurePen() {
 
     }
+
 
     @Override
     public void onCheckPressureFinish(int flag) {

@@ -65,7 +65,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
                 }
 
                 @Override
-                public void onCheckModuleUpdateFinish(byte[] data) {
+                public void onCheckModuleUpdateFinish(byte[] data){
 
                 }
 
@@ -77,6 +77,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+
         boolean result = adapter.init(null);
         if(!result){
             Toast.makeText(BaseTwoActivity.this,"初始化失败",Toast.LENGTH_SHORT).show();

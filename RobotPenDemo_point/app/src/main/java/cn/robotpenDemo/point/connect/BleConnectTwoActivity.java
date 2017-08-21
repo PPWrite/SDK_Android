@@ -71,32 +71,14 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
 
     boolean isConnected = false;
     private PenAdapter mPenAdapter;
-    //    SharedPreferences lastSp;
     SharedPreferences pairedSp;
-    ProgressDialog mProgressDialog;
     RobotDevice mRobotDevice;//连接上的设备
-    String mNewVersion; //从网络获取的最新版本号
-    /**
-     * 上次配对信息
-     */
-    public static final String SP_LAST_PAIRED = "last_paired_device";
     /**
      * 记录配对信息0
      */
     public static final String SP_PAIRED_DEVICE = "sp_paird";
-    /**
-     * 关键字
-     */
-    public static final String SP_PAIRED_KEY = "address";
-    /**
-     * 固件升级URL
-     */
-    public static final String FIREWARE_FILE_HOST = "http://dl.robotpen.cn/fw/";
-    public static final int SUCCESS = 0;
-    public static final int ERRORCODE = 1;
-    public static final int FAILURE = 2;
-    public static final int UPDATESUCCESS = 3;
-    public static final int UPDATEFAILURE = 4;
+
+
     /**
      * 当有扫描结果时的回调
      */
@@ -108,9 +90,8 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connect);
         ButterKnife.bind(this);
-        mPenAdapter = new PenAdapter(BleConnectTwoActivity.this);
+        mPenAdapter = new PenAdapter();
         //获取存储存储
-//      lastSp = this.getSharedPreferences(SP_LAST_PAIRED, MODE_PRIVATE);
         pairedSp = this.getSharedPreferences(SP_PAIRED_DEVICE, MODE_PRIVATE);
 
         listview.setAdapter(mPenAdapter);
@@ -122,7 +103,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 DeviceEntity device = mPenAdapter.getItem(index);
                 String addr = device.getAddress();
                 try {
-                    Log.e("test","开始连接："+addr);
                     adapter.connect(addr);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -181,7 +161,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 }
                 break;
             case R.id.deviceSync:
-//                    adapter.startSyncOffLineNote();
                 try {
                     if(adapter.getRobotServiceBinder()!=null&&adapter.getRobotServiceBinder().getConnectedDevice()!=null){
                         int num = adapter.getRobotServiceBinder().getConnectedDevice().getOfflineNoteNum();
@@ -247,14 +226,12 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
 
     @Override
     public void onConnected(int i) {
-        Log.e("test","onConnected");
         isConnected=true;
         mHandler.sendEmptyMessage(0x1001);
     }
 
     @Override
     public void onDisconnected() {
-        Log.e("test","onDisconnected");
         isConnected=false;
         mHandler.sendEmptyMessage(0x1000);
     }
@@ -262,13 +239,11 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onConnectFailed(int i) {
         super.onConnectFailed(i);
-        Log.e("test","onConnectFailed: "+i);
     }
 
     @Override
     public void onOfflineDataReceived(String s, boolean b) {
         super.onOfflineDataReceived(s, b);
-        Log.e("test","onOfflineDataReceived s:"+s +"     b :"+b);
     }
 
     @Override
@@ -307,7 +282,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onOfflienSyncProgress(String key, int total, int progress) {
         super.onOfflienSyncProgress(key, total, progress);
-        Log.e("test","onOfflienSyncProgress  key:"+key+" total: "+total+" progress:"+progress);
     }
 
     private Handler mHandler = new Handler(){

@@ -15,16 +15,12 @@ import android.widget.Toast;
 
 import com.codingmaster.slib.S;
 
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
-import cn.robotpen.pen.adapter.RobotPenAdapter;
 import cn.robotpen.pen.model.AllBatteryType;
-import cn.robotpen.pen.model.Battery;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
 
 /**
@@ -84,7 +80,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onPenServiceStarted() {
         super.onPenServiceStarted();
-//            S.i("");
     }
 
     private int deviceType=0;
@@ -108,7 +103,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onReceiveDot(long timestamp, int x, int y, int pressure, int state) {
         super.onReceiveDot(timestamp,x,y,pressure,state);
-        Log.e("test","x: "+x+"  y:"+y);
         S.i(x, y);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, pressure, (byte)state); //将传入的数据转化为点数据
         /**

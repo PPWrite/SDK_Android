@@ -16,9 +16,8 @@ import cn.robotpenDemo.point.R;
 public class PenAdapter extends BaseAdapter {
     private ArrayList<DeviceEntity> mPenDevices;
 
-    HashMap<String, DeviceEntity> dataCache = new HashMap<>();
 
-    public PenAdapter(Context context) {
+    public PenAdapter() {
         mPenDevices = new ArrayList<DeviceEntity>();
     }
 
@@ -43,8 +42,6 @@ public class PenAdapter extends BaseAdapter {
             if (mPenDevices.get(i).getAddress().equals(item.getAddress()))
                 return;
         }
-//        String macAddr = item.getAddress();
-        //dataCache.put(macAddr,item);
         mPenDevices.add(item);
         notifyDataSetChanged();
     }

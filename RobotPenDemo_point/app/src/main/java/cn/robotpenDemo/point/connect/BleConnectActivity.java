@@ -79,7 +79,6 @@ public class BleConnectActivity extends RobotPenActivity{
 
 
     private PenAdapter mPenAdapter;
-    //    SharedPreferences lastSp;
     SharedPreferences pairedSp;
     ProgressDialog mProgressDialog;
     RobotDevice mRobotDevice;//连接上的设备
@@ -117,9 +116,8 @@ public class BleConnectActivity extends RobotPenActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connect);
         ButterKnife.bind(this);
-        mPenAdapter = new PenAdapter(BleConnectActivity.this);
+        mPenAdapter = new PenAdapter();
         //获取存储存储
-//        lastSp = this.getSharedPreferences(SP_LAST_PAIRED, MODE_PRIVATE);
         pairedSp = this.getSharedPreferences(SP_PAIRED_DEVICE, MODE_PRIVATE);
 
         listview.setAdapter(mPenAdapter);
@@ -134,6 +132,7 @@ public class BleConnectActivity extends RobotPenActivity{
                     if (getPenServiceBinder() != null) {
                         if (getPenServiceBinder().getConnectedDevice() == null) {
                             getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
+                            Log.i("test","开始连接");
                         } else {
                             Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
                         }
@@ -159,7 +158,6 @@ public class BleConnectActivity extends RobotPenActivity{
     protected void onDestroy() {
         stopScan();
         robotScannerCompat = null;
-//        scanCallback = null;
         super.onDestroy();
     }
 
@@ -185,7 +183,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case R.id.deviceUpdate:
                 showProgress("升级中");
-                updateDeviceNew(mRobotDevice);
+                updateDeviceNew();
                 break;
         }
     }
@@ -329,19 +327,14 @@ public class BleConnectActivity extends RobotPenActivity{
     /**
      * 保存设备的连接信息
      *
-     * @param device
-     * @param name
      * @param addr
      */
-    private void saveConnectInfo(RobotDevice device, String name, String addr) {
-//        SharedPreferences.Editor edit = lastSp.edit().clear();
+    private void saveConnectInfo( String addr) {
         if (!TextUtils.isEmpty(addr)) {
             pairedSp.edit()
                     .putString(SP_PAIRED_KEY, addr)
                     .apply();
-//            edit.putString(String.valueOf(device.getDeviceType()), addr);
         }
-//        edit.apply();
     }
     /**--------------
      * 笔迹同步部分
@@ -350,11 +343,6 @@ public class BleConnectActivity extends RobotPenActivity{
      * 检查存储笔记数
      */
     private void checkStorageNoteNum(RobotDevice device) {
-       /* try {
-            getPenServiceBinder().startSyncOffLineNote();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }*/
         if(device!=null) {
             int num = device.getOfflineNoteNum();
             if (num > 0) {
@@ -382,13 +370,11 @@ public class BleConnectActivity extends RobotPenActivity{
     @Override
     public void onOffLineNoteHeadReceived(String json) {
         super.onOffLineNoteHeadReceived(json);
-        Log.e("test","onOffLineNoteHeadReceived");
     }
 
     @Override
     public void onSyncProgress(String key, int total, int progress) {
         super.onSyncProgress(key, total, progress);
-        Log.e("test","onSyncProgress");
     }
 
     @Override
@@ -420,7 +406,6 @@ public class BleConnectActivity extends RobotPenActivity{
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
         }
-        Log.e("test","onOffLineNoteSyncFinished");
     }
 
     /**--------------
@@ -461,7 +446,6 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-//                                Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
                                 deviceUpdate.setVisibility(View.GONE);
                             }
                         }else {
@@ -471,7 +455,6 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-//                                Toast.makeText(BleConnectActivity.this, "不需要更新固件", Toast.LENGTH_SHORT).show();
                                 deviceUpdate.setVisibility(View.GONE);
                             }
                         }
@@ -510,14 +493,11 @@ public class BleConnectActivity extends RobotPenActivity{
     /**
      * 检查设备固件版本
      */
-    private void checkDeviceVersion(RobotDevice device) {
-        final String otaFileName = DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent()+"svrupdate.txt";
-//        final String otaFileName = device.getName() + "_svrupdate.txt";
+    private void checkDeviceVersion() {
         new Thread() {
             public void run() {
                 int code;
                 try {
-//                    URL url = new URL(FIREWARE_FILE_HOST_TEST + otaFileName);
                     URL url = new URL(FIREWARE_FILE_HOST + "?"+"type="+mRobotDevice.getDeviceVersion());
                     HttpURLConnection conn = (HttpURLConnection) url
                             .openConnection();
@@ -546,9 +526,7 @@ public class BleConnectActivity extends RobotPenActivity{
         }.start();
     }
 
-    private void updateDeviceNew(RobotDevice device){
-//        String bleUrl = generatorBleFirmwareUrl(device);
-//        String mcuUrl = generatorMcuFirmwareUrl(device);
+    private void updateDeviceNew(){
         String bleUrl = newBleFirmwareUrl;
         String mcuUrl = newMcuFirmwareUrl;
         if(!TextUtils.isEmpty(bleUrl)){
@@ -556,26 +534,7 @@ public class BleConnectActivity extends RobotPenActivity{
         }
     }
 
-    private String generatorBleFirmwareUrl(RobotDevice device) {
-        if (!TextUtils.isEmpty(newBleFirmwareVersion))
-            return FIREWARE_FILE_HOST
-                    + DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent() + "BLE_" + newBleFirmwareVersion + ".bin";
-        return null;
-    }
 
-    /**
-     * 生成mcu固件升级url
-     * 例如：NEBULA_MCU_0.11.bin
-     *
-     * @param device
-     * @return
-     */
-    private String generatorMcuFirmwareUrl(RobotDevice device) {
-        if (!TextUtils.isEmpty(newMcuFirmwareVersion))
-            return FIREWARE_FILE_HOST
-                    + DeviceType.toDeviceType(device.getDeviceVersion()).getDeviceIdent() + "MCU_" + newMcuFirmwareVersion + ".bin";
-        return null;
-    }
 
     public void downloadFirmwareData(String... urls) {
         UpdateFirmwareDownloadTask firmDownloadTask = new UpdateFirmwareDownloadTask() {
@@ -601,79 +560,20 @@ public class BleConnectActivity extends RobotPenActivity{
 
     public void onDownFirmwareFileFinished(List<byte[]> data) {
         try {
-//            if (data.size() == 2) {
+            if (data.size() == 2) {
                 getPenServiceBinder().startUpgradeDevice(
                         newBleFirmwareVersion,
                         data.get(0),
                         newMcuFirmwareVersion,
                         data.get(1));
-//            } else {
-//                getPenServiceBinder().startUpdateFirmware(newBleFirmwareVersion, data.get(0));
-//            }
+            } else {
+                getPenServiceBinder().startUpdateFirmware(newBleFirmwareVersion, data.get(0));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-    /**
-     * 升级固件版本
-     */
-    private void updateDevice(RobotDevice device) {
-        final String path = generatorFirmwareUrl(device, mNewVersion);
-        new Thread() {
-            public void run() {
-                try {
-                    URL url = new URL(path);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.setDoOutput(false);
-                    urlConnection.setConnectTimeout(10 * 1000);
-                    urlConnection.setReadTimeout(10 * 1000);
-                    urlConnection.setRequestProperty("Connection", "Keep-Alive");
-                    urlConnection.setRequestProperty("Charset", "UTF-8");
-                    urlConnection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-                    urlConnection.connect();
-                    InputStream in = urlConnection.getInputStream();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    int bytetotal = urlConnection.getContentLength();
-                    int bytesum = 0;
-                    int byteread;
-                    byte[] buffer = new byte[1024];
-                    while ((byteread = in.read(buffer)) != -1) {
-                        bytesum += byteread;
-                        outputStream.write(buffer, 0, byteread);
-                    }
-                    outputStream.flush();
-                    outputStream.close();
-                    in.close();
-                    byte[] result = outputStream.toByteArray();
-                    outputStream.close();
-                    Message msg = new Message();
-                    msg.obj = result;
-                    msg.what = UPDATESUCCESS;
-                    mHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Message msg = new Message();
-                    msg.what = UPDATEFAILURE;
-                    mHandler.sendMessage(msg);
-                }
-            }
-        }.start();
-    }
-
-    /**
-     * 生成固件升级url
-     *
-     * @param device
-     * @return
-     */
-    private String generatorFirmwareUrl(RobotDevice device, String lastFirmwareVer) {
-        return FIREWARE_FILE_HOST + device.getName() + "_" + lastFirmwareVer + ".bin";
-    }
-
     /**
      * Stream转String
      *
@@ -725,12 +625,12 @@ public class BleConnectActivity extends RobotPenActivity{
     public void onStateChanged(int i, String s) {
         switch (i) {
             case RemoteState.STATE_CONNECTED:
-                Log.e("test","STATE_CONNECTED");
+                Log.i("test","STATE_CONNECTED");
                 break;
             case RemoteState.STATE_CONNECTING:
                 break;
             case RemoteState.STATE_DISCONNECTED: //设备断开
-                Log.e("test","STATE_DISCONNECTED");
+                Log.i("test","STATE_DISCONNECTED");
                 closeProgress();
                 statusText.setText("未连接设备！");
                 scanBut.setVisibility(View.VISIBLE);
@@ -738,6 +638,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case RemoteState.STATE_DEVICE_INFO: //设备连接成功状态
                 try {
+                    Log.i("test","STATE_DEVICE_INFO");
                     mPenAdapter.clearItems();
                     mPenAdapter.notifyDataSetChanged();
                     RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice();
@@ -751,7 +652,7 @@ public class BleConnectActivity extends RobotPenActivity{
                                 scanBut.setVisibility(View.GONE);
                                 disconnectBut.setVisibility(View.GONE);
                             } else {//如果连接的是蓝牙设备
-                                saveConnectInfo(robotDevice, robotDevice.getName(), robotDevice.getAddress());
+                                saveConnectInfo(robotDevice.getAddress());
                                 scanBut.setVisibility(View.GONE);
                                 disconnectBut.setVisibility(View.VISIBLE);
                                 //如果有离线笔记则同步离线笔记
@@ -761,7 +662,7 @@ public class BleConnectActivity extends RobotPenActivity{
                                 } else
                                     deviceSync.setVisibility(View.VISIBLE);
                                 //进行版本升级
-                                checkDeviceVersion(robotDevice);
+                                checkDeviceVersion();
                             }
                         }
                     }

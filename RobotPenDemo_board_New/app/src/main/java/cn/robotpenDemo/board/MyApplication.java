@@ -26,14 +26,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-
-       /* robotPenService = new RobotPenServiceImpl(this.getBaseContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //权限处理
-            return;
-        }
-        robotPenService.startRobotPenService(this.getBaseContext(), true);//true为在通知栏显示通知 false将不在通知栏显示*/
     }
 
     /**

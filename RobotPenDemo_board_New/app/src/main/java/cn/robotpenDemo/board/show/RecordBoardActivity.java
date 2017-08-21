@@ -101,13 +101,12 @@ public class RecordBoardActivity extends RobotPenActivity
         mHandler = new Handler();
         recordBoardView.setIsTouchWrite(true);
         recordBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
-//        recordBoardView.setBoardBackgroundColor(Color.parseColor("#FFFFFF"));
         mNoteManageModule = new NoteManageModule(this, MyApplication.getInstance().getDaoSession());
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
         recordBoardView.setIsTouchSmooth(true);
-//        recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
-//        recordBoardView.setShowRecordDialog(true);// 录制笔记结束后是否弹出对话框 默认开启
+//      recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
+//      recordBoardView.setShowRecordDialog(true);// 录制笔记结束后是否弹出对话框 默认开启
     }
 
     @Override
@@ -152,7 +151,6 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     public void checkDeviceConn() {
-        Log.e("test","checkDeviceConn checkDeviceConn");
         if (getPenServiceBinder() != null) {
             try {
                 RobotDevice device = getPenServiceBinder().getConnectedDevice();
@@ -162,7 +160,7 @@ public class RecordBoardActivity extends RobotPenActivity
                     //判断当前设备与笔记设备是否一致
                     if (recordBoardView.getFrameSizeObject().getDeviceType() != type) {
                         mDeDeviceType = type;
-                        mNoteKey = NoteEntity.KEY_NOTEKEY_TMP ;// "_" + mDeDeviceType.name()
+                        mNoteKey = NoteEntity.KEY_NOTEKEY_TMP ;
                     }
                 }else {
                     recordBoardView.setIsTouchWrite(true);
@@ -226,7 +224,6 @@ public class RecordBoardActivity extends RobotPenActivity
                                 }
                             }
                         }).show();
-
                 break;
             case R.id.changePenColorBut:
                 final String[] penColorItems = {"红色", "绿色", "蓝色", "黑色"};
@@ -270,7 +267,6 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case R.id.removePhotoBut:
                 recordBoardView.setIsTouchWrite(!recordBoardView.isTouchWrite());
-//                recordBoardView.delCurrEditPhoto();//删除当前编辑图片
                 break;
             case R.id.innerbgBut:
                 Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -338,7 +334,6 @@ public class RecordBoardActivity extends RobotPenActivity
                     v.setClickable(false);
                     recordStopBut.setBackgroundColor(Color.GRAY);
                     recordStopBut.setClickable(false);
-//                  recordBoardView.cancelRecord();
                 }
                 break;
             case R.id.isRubber:
@@ -546,7 +541,6 @@ public class RecordBoardActivity extends RobotPenActivity
             case RemoteState.STATE_CONNECTED:
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
-                //whiteBoardView.initDrawArea();
                 recordBoardView.setIsTouchWrite(false);
                 checkDeviceConn();
                 break;
@@ -572,9 +566,10 @@ public class RecordBoardActivity extends RobotPenActivity
         }
     }
 
+    private int currentPage = 0;
     @Override
-    public void onPageInfo(int i, int i1) {
-        Log.e("test","i:"+i+" i1:"+i1);
+    public void onPageInfo(int currentPage, int totalPage) {
+        this.currentPage=currentPage;
     }
 
     @Override
@@ -623,7 +618,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 onEventNextPage();
                 break;
             case 0x05:
-//                recordBoardView .insertBlock();
+                recordBoardView .insertBlock(currentPage);
                 break;
         }
 
@@ -645,17 +640,10 @@ public class RecordBoardActivity extends RobotPenActivity
      * 用于响应设备按钮事件的翻页
      */
     private void onEventNextPage() {
-            if (recordBoardView.isLastBlock()) {
+            if (recordBoardView.isLastBlock()){
                 recordBoardView.firstBlock();
             } else {
                 recordBoardView.nextBlock();
             }
     }
-
-    /* @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.e("xxxx","Xxxxxxxxxxxxx");
-        this.finish();
-    }*/
 }

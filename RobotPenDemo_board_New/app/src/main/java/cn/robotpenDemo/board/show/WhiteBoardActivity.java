@@ -46,33 +46,20 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     DeviceType mDeDeviceType = DeviceType.P1;//默认连接设备为P1 当与连接设备有冲突时则需要进行切换
     int isRubber;//是否是橡皮
-    boolean isTouchWrite;//是否可以通过屏幕书写
     float mPenWeight = 2;//笔粗细
     int mPenColor = Color.BLACK;//笔颜色
     String mNoteKey = NoteEntity.KEY_NOTEKEY_TMP;
-    ProgressDialog mProgressDialog;
     Handler mHandler;
-    private Canvas canvas = new Canvas();
-    private WeakReference<Activity> weakReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_white_board);
         ButterKnife.bind(this);
-       /* if (android.os.Build.VERSION.SDK_INT<23){
-            //运行在主线程执行网络请求
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads().detectDiskWrites().detectNetwork()
-                    .penaltyLog().build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()
-                    .penaltyLog().penaltyDeath().build());
-        }*/
         mHandler = new Handler();
         whiteBoardView.setIsTouchWrite(true);//默认用手输入
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
         whiteBoardView.setLoadIgnorePhoto(false);
-//        whiteBoardView.setIsTouchSmooth(false);
+//      whiteBoardView.setIsTouchSmooth(false);
     }
 
     @Override
@@ -224,7 +211,6 @@ public class WhiteBoardActivity extends RobotPenActivity
             case RemoteState.STATE_CONNECTED:
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
-                //whiteBoardView.initDrawArea();
                 whiteBoardView.setIsTouchWrite(false);// 设备连接成功，改为用笔输入
                 checkDeviceConn();
                 break;

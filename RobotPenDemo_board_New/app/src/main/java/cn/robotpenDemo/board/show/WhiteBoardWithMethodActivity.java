@@ -40,7 +40,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
 
     DeviceType mDeDeviceType = DeviceType.P1;//默认连接设备为P1 当与连接设备有冲突时则需要进行切换
     float isRubber = 0;//是否是橡皮
-    ProgressDialog mProgressDialog;
     Handler mHandler;
     float mPenWeight = 2;//默认笔宽度是2像素
     int mPenColor = Color.BLUE;//默认为蓝色
@@ -143,7 +142,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         if (getPenServiceBinder() != null) {
             try {
                 RobotDevice device = getPenServiceBinder().getConnectedDevice();
-//                getPenServiceBinder().editDeviceName(string) // 修改设备名称
                 if (device != null) {
                     whiteBoardView.setIsTouchWrite(false);
                     DeviceType type = DeviceType.toDeviceType(device.getDeviceVersion());
@@ -172,7 +170,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         //检查是否有需要插入的图片uri
         if (null != mInsertPhotoUri) {
             whiteBoardView.insertPhoto(getRealFilePath(WhiteBoardWithMethodActivity.this,mInsertPhotoUri));
-//            whiteBoardView.startPhotoEdit(false); //插入图片后，设置图片可以编辑状态
             mInsertPhotoUri = null;
         }
         if(null != mBgUri){
@@ -268,7 +265,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                         }).show();
                 break;
             case R.id.cleanLineBut:
-//                whiteBoardView.startPhotoEdit(false); //插入图片后，设置图片可以编辑状态
                 whiteBoardView.cleanTrail();
                 break;
             case R.id.cleanPhotoBut:
@@ -387,13 +383,13 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 whiteBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-//                checkDeviceConn();
+                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
-            /*case TRAILS_COMPLETE:
+            case TRAILS_COMPLETE:
                  checkIntentInsertPhoto();
-                break;*/
+                break;
         }
         return true;
     }
@@ -414,7 +410,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             case RemoteState.STATE_CONNECTED:
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
-                //whiteBoardView.initDrawArea();
                 checkDeviceConn();
                 whiteBoardView.setIsTouchWrite(false);
                 break;
@@ -442,9 +437,10 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
 
 
 
+    private int currentPage =0;
     @Override
-    public void onPageInfo(int i, int i1) {
-
+    public void onPageInfo(int currentPage, int totalPage) {
+        this.currentPage=currentPage;
     }
 
     @Override
@@ -494,7 +490,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 onEventNextPage();
                 break;
             case 0x05:
-//                whiteBoardView.insertBlock();
+                whiteBoardView.insertBlock(currentPage);
                 break;
         }
 
