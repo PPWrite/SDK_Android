@@ -23,7 +23,7 @@ public class MyApplication extends Application {
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate(){
         super.onCreate();
         instance = this;
     }
@@ -32,7 +32,7 @@ public class MyApplication extends Application {
      * 获取笔服务
      * @return
      */
-    public RobotPenService getRobotPenService() {
+    public RobotPenService getRobotPenService(){
         return this.robotPenService;
     }
 

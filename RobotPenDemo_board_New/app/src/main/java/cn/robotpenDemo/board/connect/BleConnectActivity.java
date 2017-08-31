@@ -330,7 +330,6 @@ public class BleConnectActivity extends RobotPenActivity {
 
     /**
      * 保存设备的连接信息
-     *
      * @param device
      * @param addr
      */
@@ -410,6 +409,7 @@ public class BleConnectActivity extends RobotPenActivity {
                 }
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
+
         }
     }
 
