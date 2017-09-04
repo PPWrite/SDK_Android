@@ -248,7 +248,7 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     @Override
     public void onPageNumberAndCategory(int pageNumber, int category) {
-
+        CLog.d("插入页码："+pageNumber+" 插入的页码类别："+category);
     }
 
     @Override

@@ -67,7 +67,7 @@ import static cn.robotpen.pen.RobotPenServiceImpl.EXTR_FROM_RECEIVER;
 
 
 public class BleConnectActivity extends RobotPenActivity {
-    
+
     private final UUID SERVICE_UUID = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
 
     @BindView(R.id.statusText)
@@ -728,6 +728,4 @@ public class BleConnectActivity extends RobotPenActivity {
     public void onCheckModuleUpdateFinish(byte[] data) {
 
     }
-
-
 }

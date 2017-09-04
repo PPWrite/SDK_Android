@@ -21,6 +21,7 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.pen.model.AllBatteryType;
+import cn.robotpen.utils.log.CLog;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
 
 /**
@@ -154,5 +155,10 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onOfflineDataReceived(String event, boolean completed) {
         S.i(event);
+    }
+
+    @Override
+    public void onReportPageNumberAndOther(int pageNumber, int Category) {
+        CLog.d("插入页码："+pageNumber+" 插入的页码类别："+Category);
     }
 }

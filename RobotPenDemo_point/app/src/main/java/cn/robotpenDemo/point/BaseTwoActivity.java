@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 
 import cn.robotpen.pen.adapter.OnPenConnectListener;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
+import cn.robotpen.utils.log.CLog;
 import cn.robotpenDemo.point.connect.BleConnectTwoActivity;
 import cn.robotpenDemo.point.connect.BytesHelper;
 
@@ -156,7 +157,7 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
     @Override
     public void onReportPageNumberAndOther(int pageNumber, int Category) {
-
+        CLog.d("插入页码："+pageNumber+" 插入的页码类别："+Category);
     }
 
 
