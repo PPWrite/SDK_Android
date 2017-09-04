@@ -154,5 +154,10 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
     }
 
+    @Override
+    public void onReportPageNumberAndOther(int pageNumber, int Category) {
+
+    }
+
 
 }
