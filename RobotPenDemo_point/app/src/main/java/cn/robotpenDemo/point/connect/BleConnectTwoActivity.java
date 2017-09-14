@@ -44,6 +44,7 @@ import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpen.pen.scan.RobotScanCallback;
 import cn.robotpen.pen.scan.RobotScannerCompat;
+import cn.robotpen.utils.log.CLog;
 import cn.robotpenDemo.point.BaseTwoActivity;
 import cn.robotpenDemo.point.MainTwoActivity;
 import cn.robotpenDemo.point.R;
@@ -360,6 +361,11 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     @Override
     public void onBackPressed() {
        this.finish();
+    }
+
+    @Override
+    public void onReportPageNumberAndOther(int pageNumber, int Category) {
+        CLog.d("插入页码："+pageNumber+" 插入的页码类别："+Category);
     }
 
 

@@ -54,6 +54,7 @@ import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpen.pen.scan.RobotScanCallback;
 import cn.robotpen.pen.scan.RobotScannerCompat;
+import cn.robotpen.utils.log.CLog;
 import cn.robotpenDemo.point.BaseTwoActivity;
 import cn.robotpenDemo.point.R;
 
@@ -689,7 +690,7 @@ public class BleConnectActivity extends RobotPenActivity{
 
     @Override
     public void onPageNumberAndCategory(int pageNumber, int category) {
-
+        CLog.d("插入页码："+pageNumber+" 插入的页码类别："+category);
     }
 
 

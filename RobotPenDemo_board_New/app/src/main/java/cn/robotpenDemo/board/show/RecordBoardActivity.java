@@ -442,7 +442,6 @@ public class RecordBoardActivity extends RobotPenActivity
     public boolean onEvent(WhiteBoardView.BoardEvent boardEvent, Object o) {
         switch (boardEvent) {
             case TRAILS_COMPLETE:
-                Log.e("test","TRAILS_COMPLETE");
                 try {
                     getPenServiceBinder().setPageInfo(recordBoardView.getBlockIndex() + 1, recordBoardView.getBlockCount());
                 } catch (RemoteException e) {
