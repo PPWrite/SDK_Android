@@ -457,6 +457,8 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
+            case ON_TRAILS:
+                break;
         }
         return true;
     }

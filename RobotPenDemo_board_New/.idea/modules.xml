@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/RobotPenDemo_board_New.iml" filepath="$PROJECT_DIR$/RobotPenDemo_board_New.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/robotfile_lib/robotfile_lib.iml" filepath="$PROJECT_DIR$/robotfile_lib/robotfile_lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/robotpen_lib/robotpen_lib.iml" filepath="$PROJECT_DIR$/robotpen_lib/robotpen_lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/robotpensdk/robotpensdk.iml" filepath="$PROJECT_DIR$/robotpensdk/robotpensdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/robotrecord_lib/robotrecord_lib.iml" filepath="$PROJECT_DIR$/robotrecord_lib/robotrecord_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/robotview_lib/robotview_lib.iml" filepath="$PROJECT_DIR$/robotview_lib/robotview_lib.iml" />
     </modules>
