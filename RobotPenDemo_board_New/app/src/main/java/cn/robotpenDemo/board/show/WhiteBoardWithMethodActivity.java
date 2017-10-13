@@ -384,12 +384,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 whiteBoardView.beginBlock();
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-                checkDeviceConn();
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
             case TRAILS_COMPLETE:
-                 checkIntentInsertPhoto();
+//                 checkIntentInsertPhoto();
                 break;
         }
         return true;
@@ -411,7 +410,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             case RemoteState.STATE_CONNECTED:
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
-                checkDeviceConn();
+//                checkDeviceConn();
                 whiteBoardView.setIsTouchWrite(false);
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开

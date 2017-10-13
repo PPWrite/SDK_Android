@@ -1,5 +1,6 @@
 package cn.robotpenDemo.board.show;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -11,16 +12,21 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.Date;
@@ -31,6 +37,7 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.model.entity.note.NoteEntity;
+import cn.robotpen.model.entity.note.TrailsEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.model.symbol.RecordState;
 import cn.robotpen.pen.callback.RobotPenActivity;
@@ -115,6 +122,18 @@ public class RecordBoardActivity extends RobotPenActivity
         super.onResume();
         recordBoardView.initDrawArea();
         checkIntentInsertPhoto();
+        if(Build.VERSION.SDK_INT >= 23 &&  ContextCompat.checkSelfPermission(this, "android.permission.RECORD_AUDIO") != 0) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale((Activity)this, "android.permission.RECORD_AUDIO")) {
+                Toast.makeText(this, cn.robotpen.record.R.string.robotpen_permission_request, Toast.LENGTH_SHORT).show();
+            }
+
+            ActivityCompat.requestPermissions((Activity)this, new String[]{"android.permission.RECORD_AUDIO"}, 0);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -453,11 +472,12 @@ public class RecordBoardActivity extends RobotPenActivity
 
                 break;
             case ERROR_DEVICE_TYPE: //检测到连接设备更换
-//                checkDeviceConn();
+
                 break;
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
             case ON_TRAILS:
+                CLog.i(""+((TrailsEntity)o).getTrails());
                 break;
         }
         return true;
@@ -520,6 +540,7 @@ public class RecordBoardActivity extends RobotPenActivity
             case ERROR:
                 break;
             case RESISTANCE:
+                recordBoardView.startRecord();
                 break;
         }
         return true;
@@ -544,7 +565,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 break;
             case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
                 recordBoardView.setIsTouchWrite(false);
-                checkDeviceConn();
+//                checkDeviceConn();
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开
                 recordBoardView.setIsTouchWrite(true);
