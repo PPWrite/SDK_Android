@@ -20,6 +20,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +30,7 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.symbol.DeviceType;
+import cn.robotpen.pen.callback.OnUiCallback;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
@@ -37,7 +41,7 @@ import cn.robotpenDemo.board.R;
 import cn.robotpenDemo.board.common.ResUtils;
 
 public class WhiteBoardWithMethodActivity extends RobotPenActivity
-        implements WhiteBoardView.WhiteBoardInterface {
+        implements WhiteBoardView.WhiteBoardInterface,OnUiCallback {
 
     DeviceType mDeDeviceType = DeviceType.P1;//默认连接设备为P1 当与连接设备有冲突时则需要进行切换
     float isRubber = 0;//是否是橡皮
@@ -95,6 +99,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
         whiteBoardView.setLoadIgnorePhoto(false);
         whiteBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
+        whiteBoardView.setSaveSnapshotDir(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO));//设置截屏的目录
     }
 
     @Override
@@ -303,6 +308,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             case R.id.saveScreenBut:
                 whiteBoardView.setSaveSnapshotDir(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO));//设置存储路径
                 whiteBoardView.saveSnapshot();
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO)))));
                 break;
             case R.id.delPageBut:
                 whiteBoardView.delCurrBlock();
@@ -315,6 +321,13 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                 break;
             case R.id.exit_edit:
                 whiteBoardView.startPhotoEdit(false);
+//                String  path = whiteBoardView.saveSnapshot();
+//                if(null!=path){
+//                    Toast.makeText(this, "截图成功", Toast.LENGTH_LONG).show();
+//                }else {
+//                    Toast.makeText(this, "截图失败", Toast.LENGTH_LONG).show();
+//                }
+                //更新图库
                 break;
         }
     }
@@ -332,51 +345,67 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         return false;
     }
 
+    // 设置设备类型
     @Override
     public DeviceType getDeviceType() {
         return mDeDeviceType;
     }
 
+    // 设置笔迹宽度
     @Override
     public float getPenWeight() {
         return mPenWeight;
     }
 
+    // 设置笔迹颜色
     @Override
     public int getPenColor() {
         return mPenColor;
     }
 
+    // 设置是否是橡皮插模式 非0时即为橡皮擦模式
     @Override
     public float getIsRubber() {
         return isRubber;
-    } //非0时即视为橡皮擦
-
-    @Override
-    public boolean getIsPressure() {
-        return false;
     }
 
+    //设置是否打开压感
+    @Override
+    public boolean getIsPressure() {
+        return true;
+    }
+
+    // 设置是否横屏显示
     @Override
     public boolean getIsHorizontal() {
         return isScreenLanscape();
     }
 
+    // 设置当前用户ID（备用接口，暂无意义）
     @Override
     public long getCurrUserId() {
         return 0;
     }
 
+    // 设置当前笔记的notekey
     @Override
     public String getNoteKey() {
         return mNoteKey;
     }
 
+    // 设置笔记名字,如果要新建的话.
     @Override
     public String getNewNoteName() {
         return null;
     }
 
+    /**
+     * 返回当前白板发生的事件
+     *
+     * @param boardEvent
+     * @param o   当前白板tag
+     * @return 返回false，表示忽略
+     */
     @Override
     public boolean onEvent(WhiteBoardView.BoardEvent boardEvent, Object o) {
         switch (boardEvent) {
@@ -388,12 +417,18 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
             case ERROR_SCENE_TYPE: //横竖屏更换
                 break;
             case TRAILS_COMPLETE:
-//                 checkIntentInsertPhoto();
                 break;
         }
         return true;
     }
 
+    /**
+     * 返回当前正在处理的消息，设置为true拦截，白板不显示
+     *
+     * @param s 消息
+     * @param o 当前白板tag
+     * @return 返回true，白板将不自动显示消息
+     */
     @Override
     public boolean onMessage(String s, Object o) {
         return false;
@@ -409,7 +444,8 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         switch (i) {
             case RemoteState.STATE_CONNECTED:
                 break;
-            case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
+            case RemoteState.STATE_DEVICE_INFO:
+                //当出现设备切换时获取到新设备信息后执行的
 //                checkDeviceConn();
                 whiteBoardView.setIsTouchWrite(false);
                 break;
@@ -419,6 +455,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         }
     }
 
+    // 笔服务错误返回信息
     @Override
     public void onPenServiceError(String s) {
 
@@ -428,8 +465,6 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         if(isRubber==0) {// isRubber==0  现在没用橡皮察,  防止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
-//            DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
-//            whiteBoardView.drawLine(p);//白板的绘制必须手动执行
             DeviceType type = DeviceType.toDeviceType(deviceType);
             whiteBoardView.drawDevicePoint(type,x,y,presure,state);
         }
@@ -498,7 +533,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
 
 
     /**
-     * 用于响应设备按钮事件的翻页
+     * 用于响应设备按钮事件的翻页 上一页
      */
     private void onEventFrontPage() {
         if (whiteBoardView.isFirstBlock()) {
@@ -509,7 +544,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     }
 
     /**
-     * 用于响应设备按钮事件的翻页
+     * 用于响应设备按钮事件的翻页 下一页
      */
     private void onEventNextPage() {
         if (whiteBoardView.isLastBlock()) {

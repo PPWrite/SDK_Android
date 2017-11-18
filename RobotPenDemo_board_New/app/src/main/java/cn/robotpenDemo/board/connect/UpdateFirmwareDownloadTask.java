@@ -2,6 +2,7 @@ package cn.robotpenDemo.board.connect;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ public class UpdateFirmwareDownloadTask extends AsyncTask<String, Integer, List<
             String url = params[i];
             if (!TextUtils.isEmpty(url)) {
                 result.add(down(i, url));
+//                break;
             }
         }
         return result;
@@ -44,6 +46,7 @@ public class UpdateFirmwareDownloadTask extends AsyncTask<String, Integer, List<
             int byteread;
             byte[] buffer = new byte[1024];
             while ((byteread = in.read(buffer)) != -1 && !isCancelled()) {
+                Log.e("test","正在下载～～～");
                 bytesum += byteread;
                 outputStream.write(buffer, 0, byteread);
                 publishProgress(bytesum, bytetotal, index);

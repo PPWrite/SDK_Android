@@ -17,7 +17,7 @@
         <Button
             android:id="@+id/deviceUpdate"
             style="?android:attr/buttonStyleSmall"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="设备升级" />

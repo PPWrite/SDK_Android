@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.RobotPenServiceImpl;
+import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpenDemo.board.common.ResUtils;
 import cn.robotpenDemo.board.connect.BleConnectActivity;
 import cn.robotpenDemo.board.show.RecordBoardActivity;
@@ -134,5 +135,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
 
 }

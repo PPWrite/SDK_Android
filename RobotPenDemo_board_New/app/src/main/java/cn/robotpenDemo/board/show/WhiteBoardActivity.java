@@ -79,7 +79,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         }
     }
     /**
-     * 当服务服务连接成功后进行
+     * 笔服务连接状态回调
      * 成功不成功都调用
      * @param name
      * @param service
@@ -231,7 +231,7 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        CLog.w(String.format("the xc:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
+//        CLog.w(String.format("the xc:%d --->x is : %d ----->y is :%d ---->the pressure:%d-----> the state:%s", deviceType, x, y, presure, String.valueOf(state)));
         //TEST 测试数据
         if(isRubber==0) {// isRubber==0  现在没用橡皮察 止选择橡皮擦的时候，不小心触碰笔，绘制笔迹。
             DevicePoint p = DevicePoint.obtain(deviceType, x, y, presure, state);
@@ -242,11 +242,13 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
 
 
+    // 上报笔记页码信息： currentPage 当前页码， totalPage 总页码。
     @Override
-    public void onPageInfo(int i, int i1) {
+    public void onPageInfo(int currentPage, int totalPage) {
 
     }
 
+    // 上报插入页信息： pageNumber 当前页码， category 当前页码所属的笔记。
     @Override
     public void onPageNumberAndCategory(int pageNumber, int category) {
         CLog.d("插入页码："+pageNumber+" 插入的页码类别："+category);

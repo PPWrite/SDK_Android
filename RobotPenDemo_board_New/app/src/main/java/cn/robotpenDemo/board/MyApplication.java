@@ -3,11 +3,14 @@ package cn.robotpenDemo.board;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
+import android.util.Log;
 
 import cn.robotpen.model.db.DBConfig;
 import cn.robotpen.model.db.DaoMaster;
 import cn.robotpen.model.db.DaoSession;
 import cn.robotpen.pen.RobotPenService;
+import cn.robotpen.pen.RobotPenServiceImpl;
+import cn.robotpenDemo.board.connect.BleConnectActivity;
 
 /**
  * Created by dadou on 2017/1/20.

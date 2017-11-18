@@ -159,7 +159,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginLeft="2dp"
             android:clickable="false"
-            android:text="退出编辑" />
+            android:text="截屏" />
     </LinearLayout>
 
     <LinearLayout

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -77,12 +78,18 @@ public class MainActivity extends RobotPenActivity {
         switch (i) {
             case RemoteState.STATE_CONNECTED:
                 break;
-            case RemoteState.STATE_DEVICE_INFO: //当出现设备切换时获取到新设备信息后执行的
+            case RemoteState.STATE_DEVICE_INFO:
+                //当出现设备切换时获取到新设备信息后执行的
                 checkDeviceConn();
                 break;
             case RemoteState.STATE_DISCONNECTED://设备断开
                 break;
         }
+    }
+
+    @Override
+    public void onRobotKeyEvent(int e) {
+        super.onRobotKeyEvent(e);
     }
 
     /**
@@ -142,7 +149,6 @@ public class MainActivity extends RobotPenActivity {
 
         connectDeviceType.setText(point.getDeviceType().name());
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
-
         penIsRoute.setText(String.valueOf(point.isRoute()));
         penPress.setText(point.getPressure() + "/" + point.getPressureValue());// pressure 是0-1的浮点值  value是0-1023的原始值
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());

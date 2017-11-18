@@ -48,6 +48,8 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
+import cn.robotpen.pen.RobotPenService;
+import cn.robotpen.pen.RobotPenServiceImpl;
 import cn.robotpen.pen.adapter.RobotPenAdapter;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
@@ -110,6 +112,7 @@ public class BleConnectActivity extends RobotPenActivity{
      */
     RobotScannerCompat robotScannerCompat;
     RobotScanCallback scanCallback;
+    private RobotPenService robotPenService;
 
 
     @Override
@@ -133,7 +136,6 @@ public class BleConnectActivity extends RobotPenActivity{
                     if (getPenServiceBinder() != null) {
                         if (getPenServiceBinder().getConnectedDevice() == null) {
                             getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
-                            Log.i("test","开始连接");
                         } else {
                             Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
                         }
@@ -266,11 +268,10 @@ public class BleConnectActivity extends RobotPenActivity{
     }
 
     /**
-     * 服务连接成功后需要实现
+     * 服务连接回调
      */
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
-        S.i("");
         checkDevice();//检测设备如果连接过则自动连接
     }
 

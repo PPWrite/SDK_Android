@@ -41,8 +41,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import butterknife.OnClick;
 import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.DeviceEntity;
 import cn.robotpen.model.symbol.DeviceType;
+import cn.robotpen.pen.RobotPenService;
 import cn.robotpen.pen.RobotPenServiceImpl;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
@@ -115,6 +118,7 @@ public class BleConnectActivity extends RobotPenActivity {
     public static final int FAILURE = 2;
     public static final int UPDATESUCCESS = 3;
     public static final int UPDATEFAILURE = 4;
+    private RobotPenService robotPenService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +150,13 @@ public class BleConnectActivity extends RobotPenActivity {
                         }
                     }else {
                         Toast.makeText(BleConnectActivity.this, "服务未启动", Toast.LENGTH_SHORT).show();
+                        robotPenService = new RobotPenServiceImpl(BleConnectActivity.this);
+                        try {
+                            robotPenService.startRobotPenService(BleConnectActivity.this, false);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 } catch (RemoteException e) {
                     Toast.makeText(BleConnectActivity.this, "连接失败，请再次点击", Toast.LENGTH_SHORT).show();
@@ -161,6 +172,19 @@ public class BleConnectActivity extends RobotPenActivity {
         super.onDestroy();
         stopScan();
         mPenAdapter.release();
+    }
+
+    @Override
+    public void onUpdateFirmwareFinished() {
+        super.onUpdateFirmwareFinished();
+        closeProgress();
+        Log.e("test","update finish");
+    }
+
+    @Override
+    public void onUpdateFirmwareProgress(int progress, int total, String info) {
+        super.onUpdateFirmwareProgress(progress, total, info);
+        Log.e("test","progress: "+progress+"total: "+total);
     }
 
     @OnClick({R.id.scanBut, R.id.disconnectBut, R.id.deviceSync, R.id.deviceUpdate})
@@ -232,7 +256,7 @@ public class BleConnectActivity extends RobotPenActivity {
     }
 
     /**
-     * 服务连接成功后需要实现
+     * 服务连接成功
      */
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
@@ -380,6 +404,7 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     public void onSyncProgress(String key, int total, int progress) {
         super.onSyncProgress(key, total, progress);
+
     }
 
     @Override
@@ -398,8 +423,7 @@ public class BleConnectActivity extends RobotPenActivity {
                     e.printStackTrace();
                     continue;
                 }
-
-                if (point.isLeave()) {
+                if (point.isLeave()){
                     //结束点
                     num++;
                     Log.v("Sync", String.format("第%d笔,共%d个点", num, points.size()));
@@ -409,7 +433,6 @@ public class BleConnectActivity extends RobotPenActivity {
                 }
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -447,7 +470,7 @@ public class BleConnectActivity extends RobotPenActivity {
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
                             if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
-                                deviceUpdate.setVisibility(View.VISIBLE);
+                                deviceUpdate.setVisibility(View.GONE);
                             } else {
                                 deviceUpdate.setVisibility(View.GONE);
                             }
@@ -456,7 +479,7 @@ public class BleConnectActivity extends RobotPenActivity {
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
-                                deviceUpdate.setVisibility(View.VISIBLE);
+                                deviceUpdate.setVisibility(View.GONE);
                             } else {
                                 deviceUpdate.setVisibility(View.GONE);
                             }
@@ -562,13 +585,13 @@ public class BleConnectActivity extends RobotPenActivity {
     }
 
     public void onDownFirmwareFileFinished(List<byte[]> data) {
+        Log.e("test","下载完成，开始升级～～");
         try {
             getPenServiceBinder().startUpgradeDevice(
                     newBleFirmwareVersion,
                     data.get(0),
                     newMcuFirmwareVersion,
                     data.get(1));
-            getPenServiceBinder().startUpgradeDevice("0.43",data.get(0),"0.0",null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -576,11 +599,20 @@ public class BleConnectActivity extends RobotPenActivity {
     }
 
     private void updateDeviceNew(){
-        String bleUrl = newBleFirmwareUrl;
-        String mcuUrl = newMcuFirmwareUrl;
-        if(!TextUtils.isEmpty(bleUrl)){
-            downloadFirmwareData(bleUrl, mcuUrl);
+//        byte[] tmp = readFileByBytes("/sdcard/1/J0-A5_BLE_0.0.0.15.bin");
+        byte[] tmp = readFileByBytes();
+        byte[] tmp1=new byte[1024];
+        try {
+               getPenServiceBinder().startUpgradeDevice("0.43",tmp,"0.0",null);
+         //    getPenServiceBinder().startUpdateFirmware("0.0.0.43", tmp);//newBleFirmwareVersion
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
+//        String bleUrl = newBleFirmwareUrl;
+//        String mcuUrl = newMcuFirmwareUrl;
+//        if(!TextUtils.isEmpty(bleUrl)){
+//            downloadFirmwareData(bleUrl, mcuUrl);
+//        }
     }
 
     /**
@@ -684,9 +716,72 @@ public class BleConnectActivity extends RobotPenActivity {
         }
     }
 
+    private String changeMac(String mac){
+        int result = 0;
+        try {
+            byte[] tmpArray = getMacBytes(mac);
+            byte [] tmpByte = new byte[4];
+            System.arraycopy(tmpArray,3,tmpByte,0,1);
+            System.arraycopy(tmpArray,2,tmpByte,1,1);
+            System.arraycopy(tmpArray,1,tmpByte,2,1);
+            System.arraycopy(tmpArray,0,tmpByte,3,1);
+            int tmpInt = bytesToInteger(tmpByte);
+//            byte [] tmpByte2 = new byte[]{0x00,(byte)0x80,0x00,0x00};
+//            int tmpInt2 = bytesToInteger(tmpByte2);
+            result=tmpInt;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result+"";
+    }
+
+    public byte [] getMacBytes(String mac){
+        byte []macBytes = new byte[6];
+        String [] strArr = mac.split(":");
+
+        for(int i = 0;i < strArr.length; i++){
+            int value = Integer.parseInt(strArr[i],16);
+            macBytes[i] = (byte) value;
+        }
+        return macBytes;
+    }
+
+    public  byte[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+
+    /**
+     * Convert char to byte
+     * @param c char
+     * @return byte
+     */
+    private byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
+    public int bytesToInteger(byte... data) {
+        int value = 0;
+        for (int i = Math.max(data.length - 4, 0); i < data.length; i++) {
+            int w = ((data.length - i - 1) * 8);
+            value = value | ((data[i] & 0xFF) << w);
+        }
+        return value;
+    }
+
     @Override
     public void onPenServiceError(String s) {
-
+        Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -728,5 +823,78 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     public void onCheckModuleUpdateFinish(byte[] data) {
 
+    }
+
+
+    /**
+     * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
+     */
+    public  byte[] readFileByBytes() {
+        InputStream in = null;
+        byte[] dataArray=null;
+        try {
+            // 一次读多个字节
+            in = getAssets().open("T7_BLE_0.0.0.44.bin");
+            dataArray = new byte[in.available()];
+            Log.e("test","in.available()："+in.available());
+            showAvailableBytes(in);
+            // 读入多个字节到字节数组中，byteread为一次读入的字节数
+            while ((in.read(dataArray)) != -1) {
+//                System.out.write(tempbytes, 0, byteread);
+                Log.e("test","开始读取");
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        return dataArray;
+    }
+
+
+    /**
+     * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
+     */
+    public  byte[] readFileByBytes(String fileName) {
+        InputStream in = null;
+        byte[] dataArray=null;
+        try {
+            // 一次读多个字节
+            in = new FileInputStream(fileName);
+            dataArray = new byte[in.available()];
+            showAvailableBytes(in);
+            // 读入多个字节到字节数组中，byteread为一次读入的字节数
+            while ((in.read(dataArray)) != -1) {
+//                System.out.write(tempbytes, 0, byteread);
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        return dataArray;
+    }
+
+    /**
+     * 显示输入流中还剩的字节数
+     */
+    private  void showAvailableBytes(InputStream in) {
+        try {
+            System.out.println("当前字节输入流中的字节数为:" + in.available());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
