@@ -135,6 +135,7 @@ public class BleConnectActivity extends RobotPenActivity{
                 try {
                     if (getPenServiceBinder() != null) {
                         if (getPenServiceBinder().getConnectedDevice() == null) {
+                            Log.e("test","开始链接:"+addr);
                             getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
                         } else {
                             Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
@@ -272,6 +273,7 @@ public class BleConnectActivity extends RobotPenActivity{
      */
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
+        Log.e("test"," onServiceConnected ");
         checkDevice();//检测设备如果连接过则自动连接
     }
 
@@ -285,6 +287,10 @@ public class BleConnectActivity extends RobotPenActivity{
             if(getPenServiceBinder()!=null) {
                 RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice(); //获取目前连接的设备
                 if (robotDevice != null) {//已连接设备
+                    if(robotDevice.getName()!=null)
+                        Log.w("test",""+robotDevice.getName());
+                    else
+                        Log.w("test","名字是空");
                     statusText.setText("已连接设备: " + robotDevice.getName());
                     if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //已连接设备
                         Toast.makeText(this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();
@@ -626,6 +632,9 @@ public class BleConnectActivity extends RobotPenActivity{
     @Override
     public void onStateChanged(int i, String s) {
         switch (i) {
+            case RemoteState.STATE_ERROR:
+                Log.i("test","STATE_ERROR");
+                break;
             case RemoteState.STATE_CONNECTED:
                 Log.i("test","STATE_CONNECTED");
                 break;

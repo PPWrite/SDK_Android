@@ -114,6 +114,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         //都需要刷新白板
         whiteBoardView.initDrawArea();
     }
+
     @OnClick(R.id.clearnScreen)
     public void onClick(View v) {
         switch (v.getId()) {
@@ -122,7 +123,6 @@ public class WhiteBoardActivity extends RobotPenActivity
                 break;
         }
     }
-
 
     public boolean isScreenLanscape() {
         Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息

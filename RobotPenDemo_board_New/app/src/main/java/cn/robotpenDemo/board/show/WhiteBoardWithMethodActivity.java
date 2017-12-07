@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -141,6 +142,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
+        Log.e("test"," onServiceConnected ");
         checkDeviceConn();
     }
 
@@ -156,7 +158,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
                         mDeDeviceType = type;
                         mNoteKey = NoteEntity.KEY_NOTEKEY_TMP + "_" + mDeDeviceType.name();
                     }
-                }else {
+                }else{
                     whiteBoardView.setIsTouchWrite(true);
                 }
             } catch (RemoteException e) {

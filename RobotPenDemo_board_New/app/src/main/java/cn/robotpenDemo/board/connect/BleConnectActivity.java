@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -25,6 +27,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.os.RemoteException;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -123,6 +126,7 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("test","onCreate");
         setContentView(R.layout.activity_ble_connect);
         ButterKnife.bind(this);
 
@@ -144,7 +148,7 @@ public class BleConnectActivity extends RobotPenActivity {
                     if(getPenServiceBinder() != null) {
                         if (getPenServiceBinder().getConnectedDevice() == null) {
                             Log.e("test","开始连接设备： "+addr);
-                            getPenServiceBinder().connectDevice(addr);//通过监听获取连接状态
+                            getPenServiceBinder().connectDevice(addr);
                         } else {
                             Toast.makeText(BleConnectActivity.this, "先断开当前设备", Toast.LENGTH_SHORT).show();
                         }
@@ -156,7 +160,6 @@ public class BleConnectActivity extends RobotPenActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
                 } catch (RemoteException e) {
                     Toast.makeText(BleConnectActivity.this, "连接失败，请再次点击", Toast.LENGTH_SHORT).show();
@@ -260,6 +263,7 @@ public class BleConnectActivity extends RobotPenActivity {
      */
     public void onServiceConnected(ComponentName name, IBinder service) {
         super.onServiceConnected(name, service);
+        Log.e("test","onServiceConnected");
         checkDevice();//检测设备如果连接过则自动连接
     }
 
@@ -294,6 +298,50 @@ public class BleConnectActivity extends RobotPenActivity {
         }
     }
 
+
+    private ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            // callbackType：确定这个回调是如何触发的
+            // result：包括4.3版本的蓝牙信息，信号强度rssi，和广播数据scanRecord
+            Log.e("testBLE","5.0+ result :"+result.getDevice().getAddress());
+        }
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+            // 批量回调，一般不推荐使用，使用上面那个会更灵活
+        }
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            // 扫描失败，并且失败原因
+            Log.e("testBLE","5.0+ errorCode :"+errorCode);
+        }
+    };
+
+
+
+
+
+
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    DeviceEntity deviced = new DeviceEntity(device);
+                    mPenAdapter.addItem(deviced);
+                    mPenAdapter.notifyDataSetChanged();
+                    //在这里可以把搜索到的设备保存起来
+                    Log.e("testBLE","getName  : "+deviced.getName());
+                    Log.e("testBLE","getAddress  : "+deviced.getAddress());
+                }
+            });
+        }
+    };
+
     /**
      * 当有扫描结果时的回调
      */
@@ -315,25 +363,32 @@ public class BleConnectActivity extends RobotPenActivity {
      * 开始扫描Ble设备--带过滤
      */
     public void startScan() {
-        Object callback = robotScanCallback.getScanCallback();
-        if (callback == null) {
-            return;
-        }
+//        Object callback = robotScanCallback.getScanCallback();
+//        if (callback == null) {
+//            return;
+//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ScanSettings settings = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                    .build();
-            List<ScanFilter> filters = new ArrayList<>();
-            ScanFilter filter = new ScanFilter.Builder()
-                    .setServiceUuid(new ParcelUuid(SERVICE_UUID))
-                    .build();
-            filters.add(filter);
-            mBluetoothAdapter.getBluetoothLeScanner()
-                    .startScan(filters, settings, (ScanCallback) callback);
+
+            // 5.0+版本
+            BluetoothLeScanner scaner = mBluetoothAdapter.getBluetoothLeScanner();  // android5.0把扫描方法单独弄成一个对象了
+            scaner.stopScan(mScanCallback);   // 停止扫描
+            scaner.startScan(mScanCallback);  // 开始扫描
+
+//            ScanSettings settings = new ScanSettings.Builder()
+//                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+//                    .build();
+//            List<ScanFilter> filters = new ArrayList<>();
+//            ScanFilter filter = new ScanFilter.Builder()
+//                    .setServiceUuid(new ParcelUuid(SERVICE_UUID))
+//                    .build();
+//            filters.add(filter);
+//            mBluetoothAdapter.getBluetoothLeScanner()
+//                    .startScan(filters, settings, (ScanCallback) callback);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mBluetoothAdapter.startLeScan(
-                    null,//new UUID[]{SERVICE_UUID},
-                    (BluetoothAdapter.LeScanCallback) callback);
+//            mBluetoothAdapter.startLeScan(
+//                    null,//new UUID[]{SERVICE_UUID},
+//                    (BluetoothAdapter.LeScanCallback) callback);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
     }
 
@@ -562,6 +617,16 @@ public class BleConnectActivity extends RobotPenActivity {
     private String newBleFirmwareVersion="";
     private String newMcuFirmwareVersion="";
 
+   private void updateDeviceNew(){
+        String bleUrl = newBleFirmwareUrl;
+        String mcuUrl = newMcuFirmwareUrl;
+        if(!TextUtils.isEmpty(bleUrl)){
+            downloadFirmwareData(bleUrl, mcuUrl);
+        }
+    }
+
+
+
     public void downloadFirmwareData(String... urls) {
         UpdateFirmwareDownloadTask firmDownloadTask = new UpdateFirmwareDownloadTask() {
             @Override
@@ -598,22 +663,6 @@ public class BleConnectActivity extends RobotPenActivity {
         }
     }
 
-    private void updateDeviceNew(){
-//        byte[] tmp = readFileByBytes("/sdcard/1/J0-A5_BLE_0.0.0.15.bin");
-        byte[] tmp = readFileByBytes();
-        byte[] tmp1=new byte[1024];
-        try {
-               getPenServiceBinder().startUpgradeDevice("0.43",tmp,"0.0",null);
-         //    getPenServiceBinder().startUpdateFirmware("0.0.0.43", tmp);//newBleFirmwareVersion
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-//        String bleUrl = newBleFirmwareUrl;
-//        String mcuUrl = newMcuFirmwareUrl;
-//        if(!TextUtils.isEmpty(bleUrl)){
-//            downloadFirmwareData(bleUrl, mcuUrl);
-//        }
-    }
 
     /**
      * Stream转String
@@ -664,6 +713,9 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     public void onStateChanged(int i, String s) {
         switch (i) {
+            case RemoteState.STATE_ERROR:
+                Log.w("test","STATE_ERROR");
+                break;
             case RemoteState.STATE_CONNECTED:
                 Log.w("test","STATE_CONNECTED");
                 break;
@@ -686,6 +738,10 @@ public class BleConnectActivity extends RobotPenActivity {
                         closeProgress();
                         mRobotDevice = robotDevice;
                         if (robotDevice.getDeviceVersion() > 0) {//针对固件bug进行解决 STATE_DEVICE_INFO 返回两次首次无设备信息第二次会上报设备信息
+                            if(robotDevice.getName()!=null)
+                                Log.w("test",""+robotDevice.getName());
+                            else
+                                Log.w("test","名字是空");
                             statusText.setText("已连接设备: " + robotDevice.getName());
                             if (robotDevice.getDeviceVersion() == DeviceType.P1.getValue()) { //如果连接上的是usb设备
                                 Toast.makeText(BleConnectActivity.this, "请先断开USB设备再进行蓝牙设备连接", Toast.LENGTH_SHORT).show();

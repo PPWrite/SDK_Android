@@ -40,6 +40,11 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
                 }
 
                 @Override
+                public void onPageNumberOnly(short number) {
+
+                }
+
+                @Override
                 public void onSupportPenPressureCheck(boolean flag) {
 
                 }
@@ -158,6 +163,31 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     @Override
     public void onReportPageNumberAndOther(int pageNumber, int Category) {
         CLog.d("插入页码："+pageNumber+" 插入的页码类别："+Category);
+    }
+
+    @Override
+    public void onSetSyncPwdCallback(int code) {
+
+    }
+
+    @Override
+    public void onStartUploadDataCallback(int code) {
+
+    }
+
+    @Override
+    public void onCloseUploadDataCallBack(int code) {
+
+    }
+
+    @Override
+    public void onCleanDataCallback(int code) {
+
+    }
+
+    @Override
+    public void onStartSyncNoteWithPassWord(int code) {
+
     }
 
 
