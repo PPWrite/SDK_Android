@@ -363,31 +363,31 @@ public class BleConnectActivity extends RobotPenActivity {
      * 开始扫描Ble设备--带过滤
      */
     public void startScan() {
-//        Object callback = robotScanCallback.getScanCallback();
-//        if (callback == null) {
-//            return;
-//        }
+        Object callback = robotScanCallback.getScanCallback();
+        if (callback == null) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             // 5.0+版本
-            BluetoothLeScanner scaner = mBluetoothAdapter.getBluetoothLeScanner();  // android5.0把扫描方法单独弄成一个对象了
-            scaner.stopScan(mScanCallback);   // 停止扫描
-            scaner.startScan(mScanCallback);  // 开始扫描
+//            BluetoothLeScanner scaner = mBluetoothAdapter.getBluetoothLeScanner();  // android5.0把扫描方法单独弄成一个对象了
+//            scaner.stopScan(mScanCallback);   // 停止扫描
+//            scaner.startScan(mScanCallback);  // 开始扫描
 
-//            ScanSettings settings = new ScanSettings.Builder()
-//                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-//                    .build();
-//            List<ScanFilter> filters = new ArrayList<>();
-//            ScanFilter filter = new ScanFilter.Builder()
-//                    .setServiceUuid(new ParcelUuid(SERVICE_UUID))
-//                    .build();
-//            filters.add(filter);
-//            mBluetoothAdapter.getBluetoothLeScanner()
-//                    .startScan(filters, settings, (ScanCallback) callback);
+            ScanSettings settings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            List<ScanFilter> filters = new ArrayList<>();
+            ScanFilter filter = new ScanFilter.Builder()
+                    .setServiceUuid(new ParcelUuid(SERVICE_UUID))
+                    .build();
+            filters.add(filter);
+            mBluetoothAdapter.getBluetoothLeScanner()
+                    .startScan(filters, settings, (ScanCallback) callback);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//            mBluetoothAdapter.startLeScan(
-//                    null,//new UUID[]{SERVICE_UUID},
-//                    (BluetoothAdapter.LeScanCallback) callback);
+            mBluetoothAdapter.startLeScan(
+                    null,//new UUID[]{SERVICE_UUID},
+                    (BluetoothAdapter.LeScanCallback) callback);
             mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
     }
