@@ -101,6 +101,7 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         whiteBoardView.setLoadIgnorePhoto(false);
         whiteBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
         whiteBoardView.setSaveSnapshotDir(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO));//设置截屏的目录
+        whiteBoardView.setBgColor(R.color.colorPrimary);
     }
 
     @Override

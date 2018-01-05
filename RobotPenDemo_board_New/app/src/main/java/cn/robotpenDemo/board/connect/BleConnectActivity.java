@@ -126,10 +126,8 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("test","onCreate");
         setContentView(R.layout.activity_ble_connect);
         ButterKnife.bind(this);
-
         mPenAdapter = new PenAdapter(BleConnectActivity.this);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         //获取存储存储
@@ -181,13 +179,11 @@ public class BleConnectActivity extends RobotPenActivity {
     public void onUpdateFirmwareFinished() {
         super.onUpdateFirmwareFinished();
         closeProgress();
-        Log.e("test","update finish");
     }
 
     @Override
     public void onUpdateFirmwareProgress(int progress, int total, String info) {
         super.onUpdateFirmwareProgress(progress, total, info);
-        Log.e("test","progress: "+progress+"total: "+total);
     }
 
     @OnClick({R.id.scanBut, R.id.disconnectBut, R.id.deviceSync, R.id.deviceUpdate})
@@ -298,56 +294,13 @@ public class BleConnectActivity extends RobotPenActivity {
         }
     }
 
-
-    private ScanCallback mScanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-            // callbackType：确定这个回调是如何触发的
-            // result：包括4.3版本的蓝牙信息，信号强度rssi，和广播数据scanRecord
-            Log.e("testBLE","5.0+ result :"+result.getDevice().getAddress());
-        }
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            super.onBatchScanResults(results);
-            // 批量回调，一般不推荐使用，使用上面那个会更灵活
-        }
-        @Override
-        public void onScanFailed(int errorCode) {
-            super.onScanFailed(errorCode);
-            // 扫描失败，并且失败原因
-            Log.e("testBLE","5.0+ errorCode :"+errorCode);
-        }
-    };
-
-
-
-
-
-
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    DeviceEntity deviced = new DeviceEntity(device);
-                    mPenAdapter.addItem(deviced);
-                    mPenAdapter.notifyDataSetChanged();
-                    //在这里可以把搜索到的设备保存起来
-                    Log.e("testBLE","getName  : "+deviced.getName());
-                    Log.e("testBLE","getAddress  : "+deviced.getAddress());
-                }
-            });
-        }
-    };
-
     /**
      * 当有扫描结果时的回调
      */
     RobotScanCallback robotScanCallback = new RobotScanCallback() {
         @Override
         public void onResult(BluetoothDevice bluetoothDevice, int i, boolean b) {
+            Log.e("testBLE"," 搜到到 ："+bluetoothDevice.getAddress());
             DeviceEntity device = new DeviceEntity(bluetoothDevice);
             mPenAdapter.addItem(device);
             mPenAdapter.notifyDataSetChanged();
@@ -370,10 +323,6 @@ public class BleConnectActivity extends RobotPenActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             // 5.0+版本
-//            BluetoothLeScanner scaner = mBluetoothAdapter.getBluetoothLeScanner();  // android5.0把扫描方法单独弄成一个对象了
-//            scaner.stopScan(mScanCallback);   // 停止扫描
-//            scaner.startScan(mScanCallback);  // 开始扫描
-
             ScanSettings settings = new ScanSettings.Builder()
                     .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                     .build();
@@ -383,12 +332,9 @@ public class BleConnectActivity extends RobotPenActivity {
                     .build();
             filters.add(filter);
             mBluetoothAdapter.getBluetoothLeScanner()
-                    .startScan(filters, settings, (ScanCallback) callback);
+                    .startScan((ScanCallback) callback);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mBluetoothAdapter.startLeScan(
-                    null,//new UUID[]{SERVICE_UUID},
-                    (BluetoothAdapter.LeScanCallback) callback);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan((BluetoothAdapter.LeScanCallback) callback);
         }
     }
 
@@ -525,18 +471,18 @@ public class BleConnectActivity extends RobotPenActivity {
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
                             if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             }
                         }else {
                             String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -650,14 +596,18 @@ public class BleConnectActivity extends RobotPenActivity {
     }
 
     public void onDownFirmwareFileFinished(List<byte[]> data) {
-        Log.e("test","下载完成，开始升级～～");
         try {
-            getPenServiceBinder().startUpgradeDevice(
+           /* getPenServiceBinder().startUpgradeDevice(
                     newBleFirmwareVersion,
                     data.get(0),
-                    newMcuFirmwareVersion,
-                    data.get(1));
+                    "0.37",
+                    data.get(1));*/
 
+            getPenServiceBinder().startUpgradeDevice(
+                    "0.15",
+                    data.get(0),
+                    "0.37",
+                    data.get(1));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -839,6 +789,7 @@ public class BleConnectActivity extends RobotPenActivity {
     public void onPenServiceError(String s) {
         Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public void onPageInfo(int i, int i1) {

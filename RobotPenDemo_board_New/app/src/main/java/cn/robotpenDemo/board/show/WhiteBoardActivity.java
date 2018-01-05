@@ -60,6 +60,7 @@ public class WhiteBoardActivity extends RobotPenActivity
         whiteBoardView.setIsTouchWrite(true);//默认用手输入
         whiteBoardView.setDaoSession(MyApplication.getInstance().getDaoSession());
         whiteBoardView.setLoadIgnorePhoto(false);
+        whiteBoardView.setBgColor(Color.WHITE);
 //      whiteBoardView.setIsTouchSmooth(false);
     }
 

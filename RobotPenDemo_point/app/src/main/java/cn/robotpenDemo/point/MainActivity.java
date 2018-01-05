@@ -53,6 +53,8 @@ public class MainActivity extends RobotPenActivity {
     Button gotoBle;
     @BindView(R.id.activity_usb)
     LinearLayout activityUsb;
+    private  int width =0;
+    private  int height=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,12 @@ public class MainActivity extends RobotPenActivity {
                 startActivity(new Intent(MainActivity.this, BleConnectActivity.class));
             }
         });
+
+        WindowManager wm = this.getWindowManager();
+
+         width = wm.getDefaultDisplay().getWidth();
+         height = wm.getDefaultDisplay().getHeight();
+        Log.e("test","w :"+width+"  h:"+height);
     }
 
 
@@ -146,14 +154,14 @@ public class MainActivity extends RobotPenActivity {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
-
+//        point.setIsHorizontal(true);
         connectDeviceType.setText(point.getDeviceType().name());
         connectDeviceSize.setText(point.getWidth() + "/" + point.getHeight());
         penIsRoute.setText(String.valueOf(point.isRoute()));
         penPress.setText(point.getPressure() + "/" + point.getPressureValue());// pressure 是0-1的浮点值  value是0-1023的原始值
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
-        penWindows.setText(point.getWindowX(0) + "/" + point.getWindowY(0));
+        penWindows.setText(point.getWindowX(width) + "/" + point.getWindowY(height));
     }
 
     @Override
