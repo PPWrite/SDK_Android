@@ -337,6 +337,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
             }
         }
 
+
         @Override
         public void onFailed(int i) {
 
