@@ -656,6 +656,7 @@ public class RecordBoardActivity extends RobotPenActivity
                 recordBoardView.lastBlock();
             } else {
                 recordBoardView.frontBlock();
+                recordBoardView.getBlockIndex();
             }
     }
 

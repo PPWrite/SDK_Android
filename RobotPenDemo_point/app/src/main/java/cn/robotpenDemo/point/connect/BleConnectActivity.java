@@ -27,7 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codingmaster.slib.S;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -261,7 +260,6 @@ public class BleConnectActivity extends RobotPenActivity{
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mPenAdapter.clearItems();
             mPenAdapter.notifyDataSetChanged();
-            S.i("");
             startScan();
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
@@ -321,7 +319,6 @@ public class BleConnectActivity extends RobotPenActivity{
      * 开始扫描Ble设备--带过滤
      */
     public void startScan() {
-        S.i("");
         robotScannerCompat.startScan();
     }
 
@@ -458,6 +455,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             }
                         }else {
                             String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
+                            Log.e("test","device_blewarever :"+device_blewarever);
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
@@ -653,6 +651,9 @@ public class BleConnectActivity extends RobotPenActivity{
                     mPenAdapter.clearItems();
                     mPenAdapter.notifyDataSetChanged();
                     RobotDevice robotDevice = getPenServiceBinder().getConnectedDevice();
+
+                    String device_blewarever = robotDevice.getBleFirmwareVerStr();
+                    Log.e("test","device_blewarever :"+device_blewarever);
                     if (null != robotDevice) {
                         closeProgress();
                         mRobotDevice = robotDevice;

@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codingmaster.slib.S;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +60,6 @@ public class MainActivity extends RobotPenActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        S.init(true,1,"PP_WRITER");
         //屏幕常亮控制
         MainActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mHandler = new Handler();
@@ -153,6 +151,7 @@ public class MainActivity extends RobotPenActivity {
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
+        Log.e("statetest","1 state : "+state+" presure :"+presure);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
 //        point.setIsHorizontal(true);
         connectDeviceType.setText(point.getDeviceType().name());

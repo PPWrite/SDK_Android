@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codingmaster.slib.S;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,7 +55,6 @@ public class MainTwoActivity extends BaseTwoActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        S.init(true,1,"S_LOG");
 
         mSetting = new SettingEntity(this);//获取通过设置改的值例如横竖屏、压感等
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -88,7 +86,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onConnected(int penType) {
         super.onConnected(penType);
-        S.i(penType);
         this.deviceType=penType;
     }
 
@@ -96,7 +93,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     public void onConnectFailed(int reasonCode) {
         super.onConnectFailed(reasonCode);
         deviceType=0;
-        S.i(reasonCode);
     }
 
 
@@ -104,7 +100,7 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onReceiveDot(long timestamp, int x, int y, int pressure, int state) {
         super.onReceiveDot(timestamp,x,y,pressure,state);
-        S.i(x, y);
+        Log.e("statetest","2 state : "+state+" presure :"+pressure);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, pressure, (byte)state); //将传入的数据转化为点数据
         /**
          *DevicePoint 将会获取更多的信息
@@ -139,7 +135,6 @@ public class MainTwoActivity extends BaseTwoActivity {
     @Override
     public void onDisconnected() {
         deviceType=0;
-        S.i("");
     }
 
     @Override
@@ -154,7 +149,6 @@ public class MainTwoActivity extends BaseTwoActivity {
 
     @Override
     public void onOfflineDataReceived(String event, boolean completed) {
-        S.i(event);
     }
 
     @Override

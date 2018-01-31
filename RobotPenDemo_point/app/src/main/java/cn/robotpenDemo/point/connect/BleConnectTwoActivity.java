@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codingmaster.slib.S;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -218,7 +217,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mPenAdapter.clearItems();
             mPenAdapter.notifyDataSetChanged();
-            S.i("");
             startScan();
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
@@ -348,7 +346,6 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
      * 开始扫描Ble设备--带过滤
      */
     public void startScan() {
-        S.i("");
         robotScannerCompat.startScan();
     }
 

@@ -76,6 +76,11 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
                 }
 
                 @Override
+                public void requetSleepTimeCallBack(int time) {
+
+                }
+
+                @Override
                 protected String convert(byte[] bytes) {
                         return new BytesHelper().bytes2Str(bytes);
                 }
