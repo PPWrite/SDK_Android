@@ -152,6 +152,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         switch (view.getId()) {
             case R.id.scanBut:
                 checkPermission();
+                Log.e("test","搜索");
                 break;
             case R.id.disconnectBut:
                 try {
@@ -227,6 +228,7 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
     public void onConnected(int i) {
         isConnected=true;
         mHandler.sendEmptyMessage(0x1001);
+        Toast.makeText(BleConnectTwoActivity.this,"连接成功",Toast.LENGTH_SHORT).show();
     }
 
     @Override

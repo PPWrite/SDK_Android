@@ -65,6 +65,7 @@ import cn.robotpen.pen.RobotPenServiceImpl;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
+import cn.robotpen.pen.model.RobotDeviceType;
 import cn.robotpen.pen.scan.RobotScanCallback;
 import cn.robotpen.pen.service.RobotRemotePenService;
 import cn.robotpen.utils.log.CLog;
@@ -385,7 +386,12 @@ public class BleConnectActivity extends RobotPenActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
-                        getPenServiceBinder().startSyncOffLineNote();
+//                        getPenServiceBinder().startSyncOffLineNote();
+                        if (getPenServiceBinder().getConnectedDevice().getDeviceVersion() == RobotDeviceType.C7.getValue()) {
+                            getPenServiceBinder().startSyncNoteWithPassWord("1213456");//todo 设置默认密码
+                        } else {
+                            getPenServiceBinder().startSyncOffLineNote();
+                        }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -405,11 +411,13 @@ public class BleConnectActivity extends RobotPenActivity {
     @Override
     public void onSyncProgress(String key, int total, int progress) {
         super.onSyncProgress(key, total, progress);
+        Log.e("test","同步离线笔记中");
 
     }
 
     @Override
     public void onOffLineNoteSyncFinished(String json, byte[] data) {
+        Log.e("test","同步离线笔记完成");
         if (data != null && data.length >= 5) {
             int num = 0, step = 1;
             List<DevicePoint> points = new ArrayList<>();
@@ -604,9 +612,9 @@ public class BleConnectActivity extends RobotPenActivity {
                     data.get(1));*/
 
             getPenServiceBinder().startUpgradeDevice(
-                    "0.15",
+                    newBleFirmwareVersion,
                     data.get(0),
-                    "0.37",
+                    newMcuFirmwareVersion,
                     data.get(1));
         } catch (Exception e) {
             e.printStackTrace();

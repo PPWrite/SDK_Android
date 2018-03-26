@@ -113,6 +113,7 @@ public class RecordBoardActivity extends RobotPenActivity
         recordBoardView.setLoadIgnorePhoto(false);
         recordBoardView.setDataSaveDir(ResUtils.getSavePath(ResUtils.DIR_NAME_DATA));
         recordBoardView.setIsTouchSmooth(true);
+        recordBoardView.setSaveSnapshotDir(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO));
 //      recordBoardView.setPenIcon(R.mipmap.ic_launcher);  // 更改笔迹笔头图标
 //      recordBoardView.setShowRecordDialog(true);// 录制笔记结束后是否弹出对话框 默认开启
     }
@@ -269,8 +270,9 @@ public class RecordBoardActivity extends RobotPenActivity
                         }).show();
                 break;
             case R.id.cleanLineBut:
-                recordBoardView.cleanTrail();
-                recordBoardView.saveSnapshot();
+//                recordBoardView.cleanTrail();
+                String dir = recordBoardView.saveSnapshot();
+                Log.e("test","dir:"+dir);
                 break;
             case R.id.cleanPhotoBut:
                 recordBoardView.cleanPhoto();// 清图片
@@ -300,7 +302,6 @@ public class RecordBoardActivity extends RobotPenActivity
                 recordBoardView.setBgPhoto(null);
                 break;
             case R.id.saveScreenBut:
-                recordBoardView.setSaveSnapshotDir(ResUtils.getSavePath(ResUtils.DIR_NAME_PHOTO));//设置存储路径
                 recordBoardView.saveSnapshot();
                 break;
             case R.id.delPageBut:

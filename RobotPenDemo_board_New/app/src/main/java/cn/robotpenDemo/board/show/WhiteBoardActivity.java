@@ -77,6 +77,11 @@ public class WhiteBoardActivity extends RobotPenActivity
           whiteBoardView.cleanScreen();  // 清屏
             whiteBoardView.dispose();
             whiteBoardView = null;
+            try {
+                getPenServiceBinder().disconnectDevice();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
     /**

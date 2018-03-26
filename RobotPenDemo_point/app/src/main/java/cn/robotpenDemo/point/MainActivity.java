@@ -72,10 +72,8 @@ public class MainActivity extends RobotPenActivity {
         });
 
         WindowManager wm = this.getWindowManager();
-
-         width = wm.getDefaultDisplay().getWidth();
-         height = wm.getDefaultDisplay().getHeight();
-        Log.e("test","w :"+width+"  h:"+height);
+        width = wm.getDefaultDisplay().getWidth();
+        height = wm.getDefaultDisplay().getHeight();
     }
 
 
@@ -151,7 +149,6 @@ public class MainActivity extends RobotPenActivity {
     public void onPenPositionChanged(int deviceType, int x, int y, int presure, byte state) {
         // state  00 离开 0x10悬空 0x11按下
         super.onPenPositionChanged(deviceType, x, y, presure, state);
-        Log.e("statetest","1 state : "+state+" presure :"+presure);
         DevicePoint point = DevicePoint.obtain(deviceType, x, y, presure, state); //将传入的数据转化为点数据
 //        point.setIsHorizontal(true);
         connectDeviceType.setText(point.getDeviceType().name());
@@ -161,6 +158,7 @@ public class MainActivity extends RobotPenActivity {
         penOriginal.setText(point.getOriginalX() + "/" + point.getOriginalY());
         connectOffest.setText(point.getOffsetX() + "/" + point.getOffsetY());
         penWindows.setText(point.getWindowX(width) + "/" + point.getWindowY(height));
+
     }
 
     @Override
@@ -202,5 +200,10 @@ public class MainActivity extends RobotPenActivity {
     @Override
     public void onCheckModuleUpdateFinish(byte[] data) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

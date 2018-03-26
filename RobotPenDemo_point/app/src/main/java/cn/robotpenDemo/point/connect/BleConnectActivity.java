@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -118,6 +120,7 @@ public class BleConnectActivity extends RobotPenActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connect);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   //应用运行时，保持屏幕高亮，不锁屏
         ButterKnife.bind(this);
         mPenAdapter = new PenAdapter();
         //获取存储存储
@@ -157,6 +160,19 @@ public class BleConnectActivity extends RobotPenActivity{
         mPenAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * @param progress
+     * @param total
+     * @param info
+     */
+    @Override
+    public void onUpdateFirmwareProgress(int progress, int total, String info) {
+        super.onUpdateFirmwareProgress(progress, total, info);
+        Log.e("test",""+progress + " "+total);
+//        deviceSync.setText(("升级进度"+progress/total)+"");
+
+    }
+
     @Override
     protected void onDestroy() {
         stopScan();
@@ -186,8 +202,117 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case R.id.deviceUpdate:
                 showProgress("升级中");
-                updateDeviceNew();
+//                updateDeviceNew();
+                byte[] bletmp =  readBLEFileByBytes();
+                byte[] mcutmp =  readMCUFileByBytes();
+                try {
+                    getPenServiceBinder().startUpgradeDevice("0.29", bletmp,"0.29",mcutmp);//newBleFirmwareVersion
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
+        }
+    }
+
+    /**
+     * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
+     */
+    public  byte[] readMCUFileByBytes() {
+        InputStream in = null;
+        byte[] dataArray=null;
+        try {
+            // 一次读多个字节
+            in = getAssets().open("X8E-A5_MCU_0.29.bin");
+            dataArray = new byte[in.available()];
+            Log.e("test","in.available()："+in.available());
+            showAvailableBytes(in);
+            // 读入多个字节到字节数组中，byteread为一次读入的字节数
+            while ((in.read(dataArray)) != -1) {
+//                System.out.write(tempbytes, 0, byteread);
+                Log.e("test","开始读取");
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        return dataArray;
+    }
+
+    /**
+     * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
+     */
+    public  byte[] readBLEFileByBytes() {
+        InputStream in = null;
+        byte[] dataArray=null;
+        try {
+            // 一次读多个字节
+            in = getAssets().open("X8E-A5_BLE_0.29.bin");
+            dataArray = new byte[in.available()];
+            Log.e("test","in.available()："+in.available());
+            showAvailableBytes(in);
+            // 读入多个字节到字节数组中，byteread为一次读入的字节数
+            while ((in.read(dataArray)) != -1) {
+//                System.out.write(tempbytes, 0, byteread);
+                Log.e("test","开始读取");
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        return dataArray;
+    }
+
+    /**
+     * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
+     */
+    public  byte[] readFileByBytes(String fileName) {
+        InputStream in = null;
+        byte[] dataArray=null;
+        try {
+            // 一次读多个字节
+            in = new FileInputStream(fileName);
+            dataArray = new byte[in.available()];
+            showAvailableBytes(in);
+            // 读入多个字节到字节数组中，byteread为一次读入的字节数
+            while ((in.read(dataArray)) != -1) {
+//                System.out.write(tempbytes, 0, byteread);
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        return dataArray;
+    }
+
+    /**
+     * 显示输入流中还剩的字节数
+     */
+    private  void showAvailableBytes(InputStream in) {
+        try {
+            System.out.println("当前字节输入流中的字节数为:" + in.available());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -451,7 +576,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             }
                         }else {
                             String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
@@ -461,7 +586,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.GONE);
+                                deviceUpdate.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -691,7 +816,7 @@ public class BleConnectActivity extends RobotPenActivity{
 
     @Override
     public void onPenServiceError(String s) {
-
+        Toast.makeText(BleConnectActivity.this,s,Toast.LENGTH_SHORT).show();
     }
 
     @Override
