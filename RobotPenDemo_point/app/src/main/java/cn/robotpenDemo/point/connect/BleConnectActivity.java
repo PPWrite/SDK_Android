@@ -202,14 +202,14 @@ public class BleConnectActivity extends RobotPenActivity{
                 break;
             case R.id.deviceUpdate:
                 showProgress("升级中");
-//                updateDeviceNew();
-                byte[] bletmp =  readBLEFileByBytes();
-                byte[] mcutmp =  readMCUFileByBytes();
-                try {
-                    getPenServiceBinder().startUpgradeDevice("0.29", bletmp,"0.29",mcutmp);//newBleFirmwareVersion
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                updateDeviceNew();
+//                byte[] bletmp =  readBLEFileByBytes();
+//                byte[] mcutmp =  readMCUFileByBytes();
+//                try {
+//                    getPenServiceBinder().startUpgradeDevice("0.29", bletmp,"0.29",mcutmp);//newBleFirmwareVersion
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
                 break;
         }
     }
@@ -576,7 +576,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.VISIBLE);
+                                deviceUpdate.setVisibility(View.GONE);
                             }
                         }else {
                             String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
@@ -586,7 +586,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             if (!newBleFirmwareVersion.equals(device_blewarever)) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
-                                deviceUpdate.setVisibility(View.VISIBLE);
+                                deviceUpdate.setVisibility(View.GONE);
                             }
                         }
                     }

@@ -125,6 +125,11 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     }
 
     @Override
+    public void onConnectFailedAdr(int reasonCode, String errorAddr) {
+
+    }
+
+    @Override
     public void onReceiveDot(long l, int i, int i1, int i2, int i3) {
 
     }
