@@ -630,6 +630,11 @@ public class RecordBoardActivity extends RobotPenActivity
     public void onCheckModuleUpdateFinish(byte[] data) {
 
     }
+    
+    @Override
+    public void requetMemorySizeCallBack(int size) {
+
+    }
 
     @Override
     public void onRobotKeyEvent(int e) {
