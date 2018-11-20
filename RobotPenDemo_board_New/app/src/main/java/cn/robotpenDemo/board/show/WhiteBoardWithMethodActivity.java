@@ -521,6 +521,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     public void requetMemorySizeCallBack(int size) {
 
     }
+    
+    @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
+    }
 
     @Override
     public void onRobotKeyEvent(int e) {

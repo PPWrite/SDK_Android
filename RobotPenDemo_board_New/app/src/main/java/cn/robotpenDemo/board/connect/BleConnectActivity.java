@@ -840,6 +840,16 @@ public class BleConnectActivity extends RobotPenActivity {
 
     }
 
+    @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
+    }
+
+    @Override
+    public void requetMemorySizeCallBack(int size) {
+        
+    }
+
 
     /**
      * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。

@@ -294,6 +294,11 @@ public class WhiteBoardActivity extends RobotPenActivity
     public void requetMemorySizeCallBack(int size) {
 
     }
+    
+    @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
+    }
 
     Bitmap bmp;
     public Bitmap getBitmap( View view){
