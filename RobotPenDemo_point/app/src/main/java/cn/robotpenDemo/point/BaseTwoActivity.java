@@ -39,10 +39,10 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
                 }
 
-                @Override
-                public void onPageNumberOnly(short number) {
-
-                }
+//                @Override
+//                public void onPageNumberOnly(long number) {
+//
+//                }
 
                 @Override
                 public void onSupportPenPressureCheck(boolean flag) {
@@ -80,10 +80,10 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
 
                 }
 
-                @Override
-                protected String convert(byte[] bytes) {
-                        return new BytesHelper().bytes2Str(bytes);
-                }
+//                @Override
+//                protected String convert(byte[] bytes) {
+//                        return new BytesHelper().bytes2Str(bytes);
+//                }
             };
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -150,9 +150,14 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     }
 
     @Override
-    public void onOfflineDataReceived(String s, boolean b) {
+    public void onOfflineDataReceived(byte[] data, boolean completed) {
 
     }
+
+//    @Override
+//    public void onOfflineDataReceived(String s, boolean b) {
+//
+//    }
 
 
     @Override
@@ -171,8 +176,18 @@ public class BaseTwoActivity extends AppCompatActivity implements OnPenConnectLi
     }
 
     @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
+    }
+
+    @Override
     public void onReportPageNumberAndOther(int pageNumber, int Category) {
         CLog.d("插入页码："+pageNumber+" 插入的页码类别："+Category);
+    }
+
+    @Override
+    public void onReportPageNumberOnly(int pageNumber) {
+
     }
 
     @Override

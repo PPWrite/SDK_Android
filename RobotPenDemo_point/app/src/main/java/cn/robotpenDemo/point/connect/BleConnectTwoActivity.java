@@ -242,10 +242,10 @@ public class BleConnectTwoActivity extends BaseTwoActivity {
         super.onConnectFailed(i);
     }
 
-    @Override
-    public void onOfflineDataReceived(String s, boolean b) {
-        super.onOfflineDataReceived(s, b);
-    }
+//    @Override
+//    public void onOfflineDataReceived(String s, boolean b) {
+//        super.onOfflineDataReceived(s, b);
+//    }
 
     @Override
     public void onOffLineNoteSyncFinished(String json, byte[] data) {

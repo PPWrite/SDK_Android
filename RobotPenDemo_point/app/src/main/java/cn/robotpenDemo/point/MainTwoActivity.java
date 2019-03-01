@@ -147,9 +147,9 @@ public class MainTwoActivity extends BaseTwoActivity {
         Log.e("test","电池电量："+percent);
     }
 
-    @Override
-    public void onOfflineDataReceived(String event, boolean completed) {
-    }
+//    @Override
+//    public void onOfflineDataReceived(String event, boolean completed) {
+//    }
 
     @Override
     public void onReportPageNumberAndOther(int pageNumber, int Category) {

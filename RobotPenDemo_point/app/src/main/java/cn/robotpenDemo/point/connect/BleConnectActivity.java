@@ -363,6 +363,11 @@ public class BleConnectActivity extends RobotPenActivity{
 
     }
 
+    @Override
+    public void requetMemorySizeCallBack(int size) {
+
+    }
+
     /**--------------
      * 设备连接部分
      -----------------*/
@@ -536,6 +541,11 @@ public class BleConnectActivity extends RobotPenActivity{
             }
             Toast.makeText(this, "共计同步了 " + num + " 笔数据", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
     }
 
     /**--------------

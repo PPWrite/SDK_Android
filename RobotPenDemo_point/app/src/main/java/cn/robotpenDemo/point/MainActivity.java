@@ -92,6 +92,11 @@ public class MainActivity extends RobotPenActivity {
     }
 
     @Override
+    public void onLargeOffLineNoteSyncFinished(String adressHead, String adressData) {
+
+    }
+
+    @Override
     public void onRobotKeyEvent(int e) {
         super.onRobotKeyEvent(e);
     }
@@ -199,6 +204,11 @@ public class MainActivity extends RobotPenActivity {
 
     @Override
     public void onCheckModuleUpdateFinish(byte[] data) {
+
+    }
+
+    @Override
+    public void requetMemorySizeCallBack(int size) {
 
     }
 
