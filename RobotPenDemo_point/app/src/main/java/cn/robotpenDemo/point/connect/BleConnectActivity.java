@@ -576,14 +576,14 @@ public class BleConnectActivity extends RobotPenActivity{
                             e.printStackTrace();
                         }
 
-                        if(!newMcuFirmwareVersion.equals("0.0")) {
+                        if(!"0.0".equals(newMcuFirmwareVersion)) {
                             String device_mcuwareVer = mRobotDevice.getMcuFirmwareVerStr();
                             String[] tmp = device_mcuwareVer.split("\\.");
                             device_mcuwareVer = "0." + tmp[tmp.length - 1];
                             String device_blewarever = mRobotDevice.getBleFirmwareVerStr();
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
-                            if (!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer)) {
+                            if (!TextUtils.isEmpty(newBleFirmwareVersion)&&(!newBleFirmwareVersion.equals(device_blewarever) || !newMcuFirmwareVersion.equals(device_mcuwareVer))) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
                                 deviceUpdate.setVisibility(View.GONE);
@@ -593,7 +593,7 @@ public class BleConnectActivity extends RobotPenActivity{
                             Log.e("test","device_blewarever :"+device_blewarever);
                             String[] tmp2 = device_blewarever.split("\\.");
                             device_blewarever = "0." + tmp2[tmp2.length - 1];
-                            if (!newBleFirmwareVersion.equals(device_blewarever)) {
+                            if (!TextUtils.isEmpty(newBleFirmwareVersion)&&(!newBleFirmwareVersion.equals(device_blewarever))) {
                                 deviceUpdate.setVisibility(View.VISIBLE);
                             } else {
                                 deviceUpdate.setVisibility(View.GONE);
@@ -830,7 +830,17 @@ public class BleConnectActivity extends RobotPenActivity{
     }
 
     @Override
+    public void onPenPointPositionChanged(int deviceType, float x, float y, int presure, byte state, int page) {
+
+    }
+
+    @Override
     public void onPageInfo(int i, int i1) {
+
+    }
+
+    @Override
+    public void onWidthAndHeight(int width, int height) {
 
     }
 
