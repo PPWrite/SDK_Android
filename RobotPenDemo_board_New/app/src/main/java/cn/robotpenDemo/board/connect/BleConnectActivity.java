@@ -798,9 +798,19 @@ public class BleConnectActivity extends RobotPenActivity {
         Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onPenPointPositionChanged(int deviceType, float x, float y, int presure, byte state, int page) {
+
+    }
+
 
     @Override
     public void onPageInfo(int i, int i1) {
+
+    }
+
+    @Override
+    public void onWidthAndHeight(int width, int height) {
 
     }
 

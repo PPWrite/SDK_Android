@@ -372,6 +372,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         return isRubber;
     }
 
+    @Override
+    public float getIsPenRubber() {
+        return 0;
+    }
+
     //设置是否打开压感
     @Override
     public boolean getIsPressure() {
@@ -473,12 +478,21 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         }
     }
 
+    @Override
+    public void onPenPointPositionChanged(int deviceType, float x, float y, int presure, byte state, int page) {
+
+    }
 
 
     private int currentPage =0;
     @Override
     public void onPageInfo(int currentPage, int totalPage) {
         this.currentPage=currentPage;
+    }
+
+    @Override
+    public void onWidthAndHeight(int width, int height) {
+
     }
 
     @Override

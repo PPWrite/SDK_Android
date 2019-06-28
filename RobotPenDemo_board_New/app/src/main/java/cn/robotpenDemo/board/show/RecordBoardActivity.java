@@ -434,6 +434,11 @@ public class RecordBoardActivity extends RobotPenActivity
     } //非0时即为橡皮擦 具体数字代表橡皮擦宽度
 
     @Override
+    public float getIsPenRubber() {
+        return 0;
+    }
+
+    @Override
     public boolean getIsPressure() {
         return false;
     }
@@ -590,10 +595,20 @@ public class RecordBoardActivity extends RobotPenActivity
         }
     }
 
+    @Override
+    public void onPenPointPositionChanged(int deviceType, float x, float y, int presure, byte state, int page) {
+
+    }
+
     private int currentPage = 0;
     @Override
     public void onPageInfo(int currentPage, int totalPage) {
         this.currentPage=currentPage;
+    }
+
+    @Override
+    public void onWidthAndHeight(int width, int height) {
+
     }
 
     @Override
