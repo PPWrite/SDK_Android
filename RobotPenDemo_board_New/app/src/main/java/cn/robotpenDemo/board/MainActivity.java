@@ -1,15 +1,8 @@
 package cn.robotpenDemo.board;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,20 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.tbruyelle.rxpermissions.RxPermissions;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.robotpen.model.symbol.DeviceType;
-import cn.robotpen.pen.RobotPenServiceImpl;
-import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpenDemo.board.common.ResUtils;
 import cn.robotpenDemo.board.connect.BleConnectActivity;
 import cn.robotpenDemo.board.show.RecordBoardActivity;
 import cn.robotpenDemo.board.show.WhiteBoardActivity;
 import cn.robotpenDemo.board.show.WhiteBoardWithMethodActivity;
+import rx.Subscription;
+import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout activityMain;
 
     List<String> itemList;
+    private RxPermissions rxPermission;
+    private Subscription permissionSub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         ListAdapter itemAdapter = new ArrayAdapter(this,R.layout.support_simple_spinner_dropdown_item,itemList);
         list.setAdapter(itemAdapter);
         list.setOnItemClickListener(itemClickListener);
+        rxPermission = new RxPermissions(this);
     }
 
     @Override
@@ -73,36 +70,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkSDPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            } else {
-                new AlertDialog.Builder(this)
-                        .setTitle("")
-                        .setCancelable(false)
-                        .setMessage("请授予SD卡读写权限")
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                finish();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent settingIntent = new Intent(
-                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", getPackageName(), null)
-                                );
-                                startActivityForResult(settingIntent, 0xF);
-                            }
-                        })
-                        .create().show();
-            }
-        } else {
-
-        }
+        unsubscribe(permissionSub);
+        permissionSub = rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
+                , Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (!aBoolean) {
+                            finish();
+                        }
+                    }
+                });
     }
 
 
@@ -136,6 +114,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * 解除注册
+     *
+     * @param subs Subscriptions
+     */
+    protected void unsubscribe(Subscription... subs) {
+        for (Subscription sub : subs) {
+            if (isUnsubscribed(sub)) {
+                sub.unsubscribe();
+            }
+        }
+    }
+    protected boolean isUnsubscribed(Subscription sub) {
+        return sub != null && !sub.isUnsubscribed();
+    }
 
 
 }

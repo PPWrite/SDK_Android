@@ -17,12 +17,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+
+import com.tbruyelle.rxpermissions.Permission;
+import com.tbruyelle.rxpermissions.RxPermissions;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.robotpen.pen.RobotPenServiceImpl;
+import cn.robotpen.utils.LogUtil;
+import cn.robotpen.utils.screen.LogUtils;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by wang on 2017/3/3.
@@ -33,6 +41,8 @@ public class SelectMainActivity extends AppCompatActivity implements AdapterView
     List<String> itemList;
     @BindView(R.id.mainactivity_listview)
     ListView mainActivityListview;
+    private RxPermissions rxPermission;
+    private Subscription permissionSub;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +55,7 @@ public class SelectMainActivity extends AppCompatActivity implements AdapterView
         ListAdapter itemAdapter = new ArrayAdapter(this,R.layout.support_simple_spinner_dropdown_item,itemList);
         mainActivityListview.setAdapter(itemAdapter);
         mainActivityListview.setOnItemClickListener(this);
+        rxPermission = new RxPermissions(this);
 
     }
 
@@ -55,41 +66,23 @@ public class SelectMainActivity extends AppCompatActivity implements AdapterView
     }
 
     private void checkSDPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            } else {
-                new AlertDialog.Builder(this)
-                        .setTitle("")
-                        .setCancelable(false)
-                        .setMessage("请授予SD卡读写权限")
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                finish();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent settingIntent = new Intent(
-                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", getPackageName(), null)
-                                );
-                                startActivityForResult(settingIntent, 0xF);
-                            }
-                        })
-                        .create().show();
-            }
-        } else {
-
-        }
+        unsubscribe(permissionSub);
+        permissionSub = rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE
+                , Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (!aBoolean) {
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unsubscribe(permissionSub);
     }
 
     @Override
@@ -105,5 +98,20 @@ public class SelectMainActivity extends AppCompatActivity implements AdapterView
                 startActivity(intent);
                 break;
         }
+    }
+    /**
+     * 解除注册
+     *
+     * @param subs Subscriptions
+     */
+    protected void unsubscribe(Subscription... subs) {
+        for (Subscription sub : subs) {
+            if (isUnsubscribed(sub)) {
+                sub.unsubscribe();
+            }
+        }
+    }
+    protected boolean isUnsubscribed(Subscription sub) {
+        return sub != null && !sub.isUnsubscribed();
     }
 }
