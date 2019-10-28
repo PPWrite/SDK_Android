@@ -45,7 +45,7 @@ dependencies {
     compile 'com.amitshekhar.android:glide-bitmap-pool:0.0.1'
     compile 'com.android.support:design:25.1.1'
     testCompile 'junit:junit:4.12'
-    compile 'cn.robotpen.pen:penservice:1.6.22.62'
+    compile 'cn.robotpen.pen:penservice:1.6.22.72'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.2@aar'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile project(':robotfile_lib')

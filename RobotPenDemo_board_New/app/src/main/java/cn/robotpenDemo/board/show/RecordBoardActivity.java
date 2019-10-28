@@ -28,13 +28,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.SettingEntity;
 import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.entity.note.TrailsEntity;
@@ -449,6 +447,11 @@ public class RecordBoardActivity extends RobotPenActivity
     }
 
     @Override
+    public boolean getUnlimitHorizontal() {
+        return false;
+    }
+
+    @Override
     public long getCurrUserId() {
         return 0;
     }
@@ -497,6 +500,11 @@ public class RecordBoardActivity extends RobotPenActivity
     @Override
     public void onPageInfoUpdated(String s) {
 
+    }
+
+    @Override
+    public int onPlaySpeed() {
+        return 0;
     }
 
     /*

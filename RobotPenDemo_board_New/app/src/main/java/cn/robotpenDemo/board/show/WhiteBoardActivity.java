@@ -1,26 +1,16 @@
 package cn.robotpenDemo.board.show;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.RemoteException;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +21,6 @@ import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.RobotPenActivity;
 import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
-import cn.robotpen.utils.FileUtils;
 import cn.robotpen.utils.log.CLog;
 import cn.robotpen.views.widget.WhiteBoardView;
 import cn.robotpenDemo.board.MyApplication;
@@ -177,6 +166,11 @@ public class WhiteBoardActivity extends RobotPenActivity
     }
 
     @Override
+    public boolean getUnlimitHorizontal() {
+        return false;
+    }
+
+    @Override
     public long getCurrUserId() {
         return 0;
     }
@@ -216,6 +210,11 @@ public class WhiteBoardActivity extends RobotPenActivity
 
     }
 
+    @Override
+    public int onPlaySpeed() {
+        return 0;
+    }
+
 
     @Override
     public void onStateChanged(int i, String s) {
@@ -251,10 +250,10 @@ public class WhiteBoardActivity extends RobotPenActivity
             whiteBoardView.drawDevicePoint(type,x,y,presure,state);
         }
     }
-
+    //点阵笔数据
     @Override
     public void onPenPointPositionChanged(int deviceType, float x, float y, int presure, byte state, int page) {
-
+        CLog.w("x="+x+"y="+y+"page="+page);
     }
 
 

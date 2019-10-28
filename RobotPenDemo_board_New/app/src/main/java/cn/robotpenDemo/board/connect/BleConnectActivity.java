@@ -5,21 +5,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +20,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.os.RemoteException;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -47,7 +39,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,11 +58,8 @@ import cn.robotpen.pen.model.RemoteState;
 import cn.robotpen.pen.model.RobotDevice;
 import cn.robotpen.pen.model.RobotDeviceType;
 import cn.robotpen.pen.scan.RobotScanCallback;
-import cn.robotpen.pen.service.RobotRemotePenService;
 import cn.robotpen.utils.log.CLog;
 import cn.robotpenDemo.board.R;
-
-import static cn.robotpen.pen.RobotPenServiceImpl.EXTR_FROM_RECEIVER;
 
 
 public class BleConnectActivity extends RobotPenActivity {
@@ -155,7 +143,7 @@ public class BleConnectActivity extends RobotPenActivity {
                         Toast.makeText(BleConnectActivity.this, "服务未启动", Toast.LENGTH_SHORT).show();
                         robotPenService = new RobotPenServiceImpl(BleConnectActivity.this);
                         try {
-                            robotPenService.startRobotPenService(BleConnectActivity.this, false);
+                           // robotPenService.startRobotPenService(BleConnectActivity.this, false);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

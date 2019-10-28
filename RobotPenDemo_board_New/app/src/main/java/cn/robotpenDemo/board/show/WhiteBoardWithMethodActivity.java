@@ -1,7 +1,6 @@
 package cn.robotpenDemo.board.show;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -21,14 +20,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.robotpen.model.DevicePoint;
 import cn.robotpen.model.entity.note.NoteEntity;
 import cn.robotpen.model.symbol.DeviceType;
 import cn.robotpen.pen.callback.OnUiCallback;
@@ -389,6 +386,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
         return isScreenLanscape();
     }
 
+    @Override
+    public boolean getUnlimitHorizontal() {
+        return false;
+    }
+
     // 设置当前用户ID（备用接口，暂无意义）
     @Override
     public long getCurrUserId() {
@@ -445,6 +447,11 @@ public class WhiteBoardWithMethodActivity extends RobotPenActivity
     @Override
     public void onPageInfoUpdated(String s) {
 
+    }
+
+    @Override
+    public int onPlaySpeed() {
+        return 0;
     }
 
     @Override
